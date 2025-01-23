@@ -10,15 +10,17 @@
     "require": {
         "php": "^7.3|^8.0|^8.1",
         "ext-json": "*",
+        "barryvdh/laravel-cors": "^3.0",
         "dacoto/laravel-setenv": "^2.0",
         "fideloper/proxy": "^4.2",
-        "fruitcake/laravel-cors": "^2.0",
+        "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.0",
         "kkomelin/laravel-translatable-string-exporter": "^1.11",
         "laravel/framework": "^8.0",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.0",
         "sentry/sentry-laravel": "^2.1",
+        "suin/php-rss-writer": "^1.6",
         "tucker-eric/eloquentfilter": "^2.4"
     },
     "require-dev": {

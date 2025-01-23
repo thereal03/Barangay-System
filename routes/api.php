@@ -16,6 +16,8 @@ use App\Http\Controllers\Api\Dashboard\TicketController as DashboardTicketContro
 use App\Http\Controllers\Api\File\FileController as FileFileController;
 use App\Http\Controllers\Api\Language\LanguageController as LanguageLanguageController;
 use App\Http\Controllers\Api\Ticket\TicketController as UserTicketController;
+use App\Http\Controllers\RSSController;
+use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'lang'], static function () {
     Route::get('/', [LanguageLanguageController::class, 'list'])->name('language.list');
@@ -39,6 +41,7 @@ Route::group(['prefix' => 'account'], static function () {
 
 Route::get('files/download/{uuid}', [FileFileController::class, 'download'])->name('files.download');
 Route::apiResource('files', FileFileController::class)->only(['store', 'show']);
+Route::get('rss', [RSSController::class, 'fetchRSS']);
 
 Route::get('tickets/statuses', [UserTicketController::class, 'statuses'])->name('tickets.statuses');
 Route::get('tickets/departments', [UserTicketController::class, 'departments'])->name('tickets.departments');
