@@ -47,34 +47,33 @@
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-100">
-                    <template v-for="ticket in ticketList">
-                      <router-link
-                        :to="'/tickets/' + ticket.uuid"
-                        class="cursor-pointer hover:bg-gray-100 p"
-                        tag="tr"
-                      >
-                        <td class="px-6 py-4 max-w-0 w-full whitespace-no-wrap">
-                          <div class="w-full truncate text-sm leading-5 text-gray-900">
-                            {{ ticket.subject }}
-                          </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-no-wrap leading-5">
-                          <div class="text-sm text-gray-800">
-                            {{ ticket.created_at | momentFormatDate }}
-                          </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-no-wrap leading-5">
-                          <div class="text-sm text-gray-800">
-                            {{ ticket.updated_at | momentFormatDateTimeAgo }}
-                          </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-no-wrap leading-5">
-                          <div class="text-sm text-gray-800">
-                            {{ ticket.status.name }}
-                          </div>
-                        </td>
-                      </router-link>
-                    </template>
+                    <tr
+                      v-for="ticket in ticketList"
+                      :key="ticket.uuid"
+                      class="cursor-pointer hover:bg-gray-100"
+                      @click="goToTicket(ticket.uuid)"
+                    >
+                      <td class="px-6 py-4 max-w-0 w-full whitespace-no-wrap">
+                        <div class="w-full truncate text-sm leading-5 text-gray-900">
+                          {{ ticket.subject }}
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
+                        <div class="text-sm text-gray-800">
+                          {{ ticket.created_at | momentFormatDate }}
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
+                        <div class="text-sm text-gray-800">
+                          {{ ticket.updated_at | momentFormatDateTimeAgo }}
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
+                        <div class="text-sm text-gray-800">
+                          {{ ticket.status.name }}
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -105,7 +104,7 @@
           <!-- Pagination Section -->
           <nav class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
             <div class="hidden sm:block">
-              <p class="text-sm leading-5 text-gray-700">
+              <p v-if="pagination.total > 0" class="text-sm leading-5 text-gray-700">
                 {{ $t('Showing') }}
                 <span class="font-medium">{{ (pagination.perPage * pagination.currentPage) - pagination.perPage + 1 }}</span>
                 {{ $t('to') }}
@@ -113,6 +112,9 @@
                 {{ $t('of') }}
                 <span class="font-medium">{{ pagination.total }}</span>
                 {{ $t('results') }}
+              </p>
+              <p v-else class="text-sm leading-5 text-gray-700">
+                {{ $t('No results found') }}
               </p>
             </div>
             <div class="flex-1 flex justify-between sm:justify-end">
@@ -138,13 +140,27 @@
           </nav>
 
           <!-- Latest News Section -->
-          <div class="mt-10">
-            <h2 class="text-2xl font-bold">{{ $t('Latest News') }}</h2>
+          <div class="mt-10 bg-gray-50 p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">{{ $t('Latest News') }}</h2>
             <ul>
-              <li v-for="article in articles" :key="article.link" class="my-4">
-                <a :href="article.link" target="_blank" class="text-blue-500 hover:underline">{{ article.title }}</a>
-                <p class="text-gray-700">{{ article.description }}</p>
-                <small class="text-gray-500">{{ article.pubDate }}</small>
+              <li
+                v-for="article in articles"
+                :key="article.link"
+                class="mb-6 border-b border-gray-200 pb-4 last:border-none"
+              >
+                <a
+                  :href="article.link"
+                  target="_blank"
+                  class="text-lg font-semibold text-blue-600 hover:underline"
+                >
+                  {{ article.title }}
+                </a>
+                <p class="mt-2 text-gray-700">
+                  {{ article.description }}
+                </p>
+                <small class="block mt-1 text-sm text-gray-500">
+                  {{ article.pubDate }}
+                </small>
               </li>
             </ul>
           </div>
@@ -168,7 +184,7 @@ export default {
   mounted() {
     this.getStatuses();
     this.getTickets();
-    this.fetchRSS();  // Fetch RSS when the component is mounted
+    this.fetchRSS();
   },
   data() {
     return {
@@ -191,7 +207,7 @@ export default {
         total: 0,
         totalPages: 0
       },
-      articles: [],  // Store the fetched RSS articles
+      articles: [],
     };
   },
   computed: {
@@ -200,12 +216,10 @@ export default {
     }
   },
   methods: {
-    // Fetch the RSS feed from your local API endpoint
     fetchRSS() {
-      axios.get('http://127.0.0.1:8000/api/rss')  // Make sure this points to your API
+      axios.get('http://127.0.0.1:8000/api/rss')
         .then(response => {
-          // Assuming the response returns a structured array of articles
-          this.articles = response.data;  // Adjust based on your API response structure
+          this.articles = response.data;
           this.loading = false;
         })
         .catch(error => {
@@ -213,56 +227,47 @@ export default {
           this.loading = false;
         });
     },
-
-    // Get the ticket statuses
     getStatuses() {
-      const self = this;
-      axios.get('api/tickets/statuses').then(function (response) {
-        self.statusList = response.data;
+      axios.get('api/tickets/statuses').then(response => {
+        this.statusList = response.data;
       });
     },
-
-    // Get tickets
     getTickets() {
-      const self = this;
-      self.loading = true;
+      this.loading = true;
       axios.get('api/tickets', {
         params: {
-          page: self.page,
-          sort: self.sort,
-          perPage: self.perPage,
-          search: self.filters.search,
-          status: self.filters.status,
+          page: this.page,
+          sort: this.sort,
+          perPage: this.perPage,
+          search: this.filters.search,
+          status: this.filters.status,
         }
-      }).then(function (response) {
-        self.ticketList = response.data.items;
-        self.pagination = response.data.pagination;
-        if (self.pagination.totalPages < self.pagination.currentPage) {
-          self.page = self.pagination.totalPages;
-          self.getTickets();
+      }).then(response => {
+        this.ticketList = response.data.items;
+        this.pagination = response.data.pagination;
+        if (this.pagination.totalPages < this.pagination.currentPage) {
+          this.page = this.pagination.totalPages;
+          this.getTickets();
         } else {
-          self.loading = false;
+          this.loading = false;
         }
-      }).catch(function () {
-        self.loading = false;
+      }).catch(() => {
+        this.loading = false;
       });
     },
-
-    // Change page for pagination
     changePage(page) {
-      const self = this;
-      if ((page > 0) && (page <= self.pagination.totalPages) && (page !== self.page)) {
-        self.page = page;
-        self.getTickets();
+      if ((page > 0) && (page <= this.pagination.totalPages) && (page !== this.page)) {
+        this.page = page;
+        this.getTickets();
       }
     },
-
-    // Change sorting
     changeSort() {
-      const self = this;
-      self.sort.order = self.sort.order === 'asc' ? 'desc' : 'asc';
-      self.getTickets();
+      this.sort.order = this.sort.order === 'asc' ? 'desc' : 'asc';
+      this.getTickets();
     },
+    goToTicket(uuid) {
+      this.$router.push(`/tickets/${uuid}`);
+    }
   }
 }
 </script>
