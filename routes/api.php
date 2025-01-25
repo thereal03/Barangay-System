@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Language\LanguageController as LanguageLanguageCont
 use App\Http\Controllers\Api\Ticket\TicketController as UserTicketController;
 use App\Http\Controllers\RSSController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Dashboard\Admin\ServiceController;
 
 Route::group(['prefix' => 'lang'], static function () {
     Route::get('/', [LanguageLanguageController::class, 'list'])->name('language.list');
@@ -106,5 +107,13 @@ Route::group(['prefix' => 'dashboard'], static function () {
 
         Route::post('languages/sync', [DashboardAdminLanguageController::class, 'sync'])->name('language.sync');
         Route::apiResource('languages', DashboardAdminLanguageController::class);
+        
+        // Public routes
+        Route::get('services', [ServiceController::class, 'index']);
+        Route::get('services/{service}', [ServiceController::class, 'show']);
+        Route::post('services', [ServiceController::class, 'store']);
+        Route::put('services/{service}', [ServiceController::class, 'update']);
+        Route::delete('services/{service}', [ServiceController::class, 'destroy']);        
+
     });
 });

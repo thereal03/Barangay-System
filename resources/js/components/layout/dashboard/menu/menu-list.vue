@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!-- General Section -->
         <div class="my-3 mx-4 uppercase text-gray-300 text-xs">
             {{ $t('General') }}
         </div>
@@ -23,6 +24,8 @@
             icon="font-awesome.comments-alt-regular"
             to="/dashboard/canned-replies"
         ></menu-item>
+
+        <!-- Administration Section -->
         <div
             v-if="$store.state.permissions && (
                 $store.state.permissions['App.Http.Controllers.Api.Dashboard.Admin.UserController'] ||
@@ -34,6 +37,17 @@
         >
             {{ $t('Administration') }}
         </div>
+
+        <!-- Add Services Menu Item -->
+        <menu-item
+            v-if="$store.state.permissions && $store.state.permissions['App.Http.Controllers.Api.Dashboard.Admin.ServiceController']"
+            :label="$t('Services')"
+            :mobile="mobile"
+            icon="font-awesome.users-class-regular"
+            to="/dashboard/admin/services"
+        ></menu-item>
+
+
         <menu-item
             v-if="$store.state.permissions && $store.state.permissions['App.Http.Controllers.Api.Dashboard.Admin.DepartmentController']"
             :label="$t('Departments')"

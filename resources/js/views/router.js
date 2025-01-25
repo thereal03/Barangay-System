@@ -66,6 +66,10 @@ import AccountPage from "@/views/pages/account/account";
 import DashboardNotFoundPage from "@/views/pages/dashboard/error/not-found";
 import PageNotFoundPage from "@/views/pages/error/not-found";
 
+import ServiceList from "@/views/pages/dashboard/admin/services/ServiceList";
+import ServiceItem from "@/views/pages/dashboard/admin/services/ServiceItem";
+import ServiceForm from "@/views/pages/dashboard/admin/services/ServiceForm";
+
 Vue.use(VueRouter);
 
 let routes = [
@@ -137,6 +141,21 @@ let routes = [
             {path: 'admin/languages', component: AdminDashboardLanguagesList, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.LanguageController'}},
             {path: 'admin/languages/new', component: AdminDashboardLanguagesNew, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.LanguageController'}},
             {path: 'admin/languages/:id/edit', component: AdminDashboardLanguagesEdit, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.LanguageController'}},
+
+            
+                    {
+                        path: 'admin/services', component: ServiceList, 
+                        meta: { middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.ServiceController' }
+                    },
+                    {
+                        path: 'admin/services/:id', component: ServiceItem, 
+                        meta: { middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.ServiceController' }
+                    },
+                    {
+                        path: 'admin/services/new', component: ServiceForm, 
+                        meta: { middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.ServiceController' }
+                    },
+                    // ... other routes
 
             {path: '*', component: DashboardNotFoundPage, meta: {middleware: 'auth', dashboard_access: true}},
         ]
