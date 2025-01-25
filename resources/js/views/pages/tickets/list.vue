@@ -27,58 +27,59 @@
 
           <!-- Ticket Table Section -->
           <template v-if="ticketList.length > 0">
-            <div class="-my-2 sm:-mx-6 lg:-mx-8">
-              <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead>
-                    <tr>
-                      <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
-                        {{ $t('Subject') }}
-                      </th>
-                      <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
-                        {{ $t('Created at') }}
-                      </th>
-                      <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
-                        {{ $t('Updated at') }}
-                      </th>
-                      <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
-                        {{ $t('Status') }}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-100">
-                    <tr
-                      v-for="ticket in ticketList"
-                      :key="ticket.uuid"
-                      class="cursor-pointer hover:bg-gray-100"
-                      @click="goToTicket(ticket.uuid)"
-                    >
-                      <td class="px-6 py-4 max-w-0 w-full whitespace-no-wrap">
-                        <div class="w-full truncate text-sm leading-5 text-gray-900">
-                          {{ ticket.subject }}
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
-                        <div class="text-sm text-gray-800">
-                          {{ ticket.created_at | momentFormatDate }}
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
-                        <div class="text-sm text-gray-800">
-                          {{ ticket.updated_at | momentFormatDateTimeAgo }}
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
-                        <div class="text-sm text-gray-800">
-                          {{ ticket.status.name }}
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+  <div class="-my-2 sm:-mx-6 lg:-mx-8">
+    <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead>
+          <tr>
+            <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
+              {{ $t('Subject') }}
+            </th>
+            <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
+              {{ $t('Created at') }}
+            </th>
+            <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
+              {{ $t('Updated at') }}
+            </th>
+            <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
+              {{ $t('Status') }}
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-100">
+          <tr
+            v-for="ticket in ticketList"
+            :key="ticket.uuid"
+            class="cursor-pointer hover:bg-gray-100"
+            @click="goToTicket(ticket.uuid)"
+          >
+            <td class="px-6 py-4 max-w-0 w-full whitespace-no-wrap">
+              <div class="w-full truncate text-sm leading-5 text-gray-900">
+                {{ ticket.subject }}
               </div>
-            </div>
-          </template>
+            </td>
+            <td class="px-6 py-4 whitespace-no-wrap leading-5">
+              <div class="text-sm text-gray-800">
+                {{ formatDate(ticket.created_at) }}
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-no-wrap leading-5">
+              <div class="text-sm text-gray-800">
+                {{ formatDate(ticket.updated_at) }}
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-no-wrap leading-5">
+              <div class="text-sm text-gray-800">
+                {{ ticket.status.name }}
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
 
           <!-- No Results Found Section -->
           <template v-else-if="!loading">
@@ -216,6 +217,17 @@ export default {
     }
   },
   methods: {
+    formatDate(date) {
+      return new Date(date).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: true
+      }); // Example format: "January 25, 2025, 11:55:18 AM"
+    },
     fetchRSS() {
       axios.get('http://127.0.0.1:8000/api/rss')
         .then(response => {
