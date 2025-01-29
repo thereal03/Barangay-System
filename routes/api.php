@@ -20,6 +20,15 @@ use App\Http\Controllers\RSSController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Dashboard\Admin\ServiceController;
 
+    // Move the 'services' routes inside the 'dashboard/admin' prefix
+    Route::group(['prefix' => 'dashboard/admin'], static function () {
+        Route::get('services', [ServiceController::class, 'index']);
+        Route::get('services/{service}', [ServiceController::class, 'show']);
+        Route::post('services', [ServiceController::class, 'store']);
+        Route::put('services/{service}', [ServiceController::class, 'update']);
+        Route::delete('services/{service}', [ServiceController::class, 'destroy']);
+    });
+
 Route::group(['prefix' => 'lang'], static function () {
     Route::get('/', [LanguageLanguageController::class, 'list'])->name('language.list');
     Route::get('/{lang}', [LanguageLanguageController::class, 'get'])->name('language.get');
@@ -75,9 +84,7 @@ Route::group(['prefix' => 'dashboard'], static function () {
         Route::apiResource('departments', DashboardAdminDepartmentController::class);
 
         Route::apiResource('labels', DashboardAdminLabelController::class);
-
         Route::apiResource('statuses', DashboardAdminStatusController::class)->except(['store', 'delete']);
-
         Route::apiResource('priorities', DashboardAdminPriorityController::class)->except(['store', 'delete']);
 
         Route::get('users/user-roles', [DashboardAdminUserController::class, 'userRoles'])->name('users.user-roles');
@@ -90,30 +97,8 @@ Route::group(['prefix' => 'dashboard'], static function () {
         Route::get('settings/languages', [DashboardAdminSettingController::class, 'languages'])->name('settings.languages');
         Route::get('settings/general', [DashboardAdminSettingController::class, 'getGeneral'])->name('settings.get.general');
         Route::post('settings/general', [DashboardAdminSettingController::class, 'setGeneral'])->name('settings.set.general');
-        Route::get('settings/seo', [DashboardAdminSettingController::class, 'getSeo'])->name('settings.get.seo');
-        Route::post('settings/seo', [DashboardAdminSettingController::class, 'setSeo'])->name('settings.set.seo');
-        Route::get('settings/appearance', [DashboardAdminSettingController::class, 'getAppearance'])->name('settings.get.appearance');
-        Route::post('settings/appearance', [DashboardAdminSettingController::class, 'setAppearance'])->name('settings.set.appearance');
-        Route::get('settings/localization', [DashboardAdminSettingController::class, 'getLocalization'])->name('settings.get.localization');
-        Route::post('settings/localization', [DashboardAdminSettingController::class, 'setLocalization'])->name('settings.set.localization');
-        Route::get('settings/authentication', [DashboardAdminSettingController::class, 'getAuthentication'])->name('settings.get.authentication');
-        Route::post('settings/authentication', [DashboardAdminSettingController::class, 'setAuthentication'])->name('settings.set.authentication');
-        Route::get('settings/outgoing-mail', [DashboardAdminSettingController::class, 'getOutgoingMail'])->name('settings.get.outgoingMail');
-        Route::post('settings/outgoing-mail', [DashboardAdminSettingController::class, 'setOutgoingMail'])->name('settings.set.outgoingMail');
-        Route::get('settings/logging', [DashboardAdminSettingController::class, 'getLogging'])->name('settings.get.logging');
-        Route::post('settings/logging', [DashboardAdminSettingController::class, 'setLogging'])->name('settings.set.logging');
-        Route::get('settings/captcha', [DashboardAdminSettingController::class, 'getCaptcha'])->name('settings.get.captcha');
-        Route::post('settings/captcha', [DashboardAdminSettingController::class, 'setCaptcha'])->name('settings.set.captcha');
 
         Route::post('languages/sync', [DashboardAdminLanguageController::class, 'sync'])->name('language.sync');
         Route::apiResource('languages', DashboardAdminLanguageController::class);
-        
-        // Public routes
-        Route::get('services', [ServiceController::class, 'index']);
-        Route::get('services/{service}', [ServiceController::class, 'show']);
-        Route::post('services', [ServiceController::class, 'store']);
-        Route::put('services/{service}', [ServiceController::class, 'update']);
-        Route::delete('services/{service}', [ServiceController::class, 'destroy']);        
-
     });
 });
