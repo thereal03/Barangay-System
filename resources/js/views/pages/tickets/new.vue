@@ -39,6 +39,8 @@
                                             >
                                         </div>
                                     </div>
+
+                                    <!-- Department Dropdown -->
                                     <div v-if="departmentList.length > 0" class="col-span-3">
                                         <label class="block text-sm font-medium leading-5 text-gray-700" for="department">{{ $t('Department') }}</label>
                                         <div class="mt-1 relative rounded-md shadow-sm">
@@ -51,6 +53,21 @@
                                             />
                                         </div>
                                     </div>
+
+                                    <!-- Service Dropdown -->
+                                    <div v-if="serviceList.length > 0" class="col-span-3">
+                                        <label class="block text-sm font-medium leading-5 text-gray-700" for="service">{{ $t('Service') }}</label>
+                                        <div class="mt-1 relative rounded-md shadow-sm">
+                                            <input-select
+                                                id="service"
+                                                v-model="ticket.service_id"
+                                                :options="serviceList"
+                                                option-label="name"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
                                     <div class="col-span-3">
                                         <label class="block text-sm font-medium leading-5 text-gray-700" for="ticket_body">{{ $t('Ticket body') }}</label>
                                         <div class="mt-1 relative rounded-md shadow-sm">
@@ -114,14 +131,17 @@ export default {
             ticket: {
                 subject: null,
                 department_id: null,
+                service_id: null, // Added for service
                 body: '',
                 attachments: [],
             },
             departmentList: [],
+            serviceList: [], // New property for services
         }
     },
     mounted() {
         this.getDepartments();
+        this.getServices(); // Fetch services
     },
     methods: {
         getDepartments() {
@@ -129,6 +149,16 @@ export default {
             self.loading.form = true;
             axios.get('api/tickets/departments').then(function (response) {
                 self.departmentList = response.data;
+                self.loading.form = false;
+            }).catch(function () {
+                self.loading.form = false;
+            });
+        },
+        getServices() {
+            const self = this;
+            self.loading.form = true;
+            axios.get('api/dashboard/admin/services').then(function (response) {
+                self.serviceList = response.data; // Make sure this is the correct data path
                 self.loading.form = false;
             }).catch(function () {
                 self.loading.form = false;
