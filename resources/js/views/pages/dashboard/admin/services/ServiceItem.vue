@@ -179,15 +179,23 @@ export default {
                 .put(`api/dashboard/admin/services/${this.$route.params.id}`, this.service)
                 .then((response) => {
                     this.loading = false;
+                    // Notify the user of successful update
                     this.$notify({
                         title: this.$i18n.t("Success"),
                         text: this.$i18n.t("Data updated correctly"),
                         type: "success",
                     });
+
+                    // Update the service data with the response
                     this.service = response.data.service;
+
+                    // Redirect to the Services list after saving
+                    this.$router.push("/dashboard/admin/services").catch(() => {});
                 })
-                .catch(() => {
+                .catch((error) => {
                     this.loading = false;
+                    // Handle error, if any
+                    console.error("There was an error updating the service:", error);
                 });
         },
         getService() {
