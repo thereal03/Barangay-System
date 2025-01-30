@@ -20,6 +20,7 @@
                         </div>
                         <div class="mt-5 md:mt-0 md:col-span-2">
                             <div class="grid grid-cols-3 gap-6">
+                                <!-- Customer Dropdown -->
                                 <div class="col-span-3">
                                     <label class="block text-sm font-medium leading-5 text-gray-700" for="customer">{{ $t('Customer') }}</label>
                                     <div class="mt-1 relative rounded-md shadow-sm">
@@ -55,6 +56,8 @@
                                         </input-select>
                                     </div>
                                 </div>
+
+                                <!-- Subject Input -->
                                 <div class="col-span-3">
                                     <label class="block text-sm font-medium leading-5 text-gray-700" for="subject">{{ $t('Subject') }}</label>
                                     <div class="mt-1 relative rounded-md shadow-sm">
@@ -67,6 +70,8 @@
                                         >
                                     </div>
                                 </div>
+
+                                <!-- Department Dropdown -->
                                 <div class="col-span-3">
                                     <label class="block text-sm font-medium leading-5 text-gray-700" for="department">{{ $t('Department') }}</label>
                                     <div class="mt-1 relative rounded-md shadow-sm">
@@ -79,6 +84,8 @@
                                         />
                                     </div>
                                 </div>
+
+                                <!-- Status Dropdown -->
                                 <div class="col-span-3">
                                     <label class="block text-sm font-medium leading-5 text-gray-700" for="status">{{ $t('Status') }}</label>
                                     <div class="mt-1 relative rounded-md shadow-sm">
@@ -91,6 +98,8 @@
                                         />
                                     </div>
                                 </div>
+
+                                <!-- Priority Dropdown -->
                                 <div class="col-span-3">
                                     <label class="block text-sm font-medium leading-5 text-gray-700" for="priority">{{ $t('Priority') }}</label>
                                     <div class="mt-1 relative rounded-md shadow-sm">
@@ -103,6 +112,22 @@
                                         />
                                     </div>
                                 </div>
+
+                                <!-- Service Dropdown -->
+                                <div class="col-span-3">
+                                    <label class="block text-sm font-medium leading-5 text-gray-700" for="service">{{ $t('Service') }}</label>
+                                    <div class="mt-1 relative rounded-md shadow-sm">
+                                        <input-select
+                                            id="service"
+                                            v-model="ticket.service_id"
+                                            :options="servicesList"
+                                            option-label="name"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <!-- Ticket Body -->
                                 <div class="col-span-3">
                                     <label class="block text-sm font-medium leading-5 text-gray-700" for="ticket_body">{{ $t('Ticket body') }}</label>
                                     <div class="mt-1 relative rounded-md shadow-sm">
@@ -121,6 +146,8 @@
                                         </input-wysiwyg>
                                     </div>
                                 </div>
+
+                                <!-- Attachments -->
                                 <div v-if="ticket.attachments.length > 0" class="col-span-3">
                                     <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2">
                                         <template v-for="(attachment, index) in ticket.attachments">
@@ -131,6 +158,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Action Buttons -->
                     <div class="bg-gray-100 text-right px-4 py-3 sm:px-6">
                         <div class="inline-flex">
                             <router-link
@@ -175,6 +204,7 @@ export default {
                 department_id: null,
                 status_id: 1,
                 priority_id: 1,
+                service_id: null, // Added service_id to ticket data
                 body: '',
                 attachments: [],
             },
@@ -183,6 +213,7 @@ export default {
             statusList: [],
             priorityList: [],
             cannedReplyList: [],
+            servicesList: [], // Added services list
         }
     },
     mounted() {
@@ -190,18 +221,39 @@ export default {
         this.getCannedReplies();
     },
     methods: {
+        // Define selectUploadFile method
+        selectUploadFile(file) {
+            // Handle file selection logic here
+            console.log("File selected: ", file);
+            
+            // You can process the file or handle the upload logic here
+        },
+
+        // Separate API calls for fetching filters and services
         getFilters() {
             const self = this;
             self.loading.form = true;
-            axios.get('api/dashboard/tickets/filters').then(function (response) {
-                self.userList = response.data.customers;
-                self.departmentList = response.data.departments;
-                self.statusList = response.data.statuses;
-                self.priorityList = response.data.priorities;
+
+            // Fetch services list from the correct API endpoint
+            axios.get('api/dashboard/admin/services').then(function (response) {
+                self.servicesList = response.data; // Corrected here
                 self.loading.form = false;
             }).catch(function () {
                 self.loading.form = false;
-            })
+            });
+
+            // Fetch other lists from their respective endpoints
+            axios.get('api/dashboard/tickets/filters')  // This one fetches departments, users, status, and priority
+                .then(function (response) {
+                    self.userList = response.data.customers;
+                    self.departmentList = response.data.departments;
+                    self.statusList = response.data.statuses;
+                    self.priorityList = response.data.priorities;
+                    self.loading.form = false;
+                })
+                .catch(function () {
+                    self.loading.form = false;
+                });
         },
         getCannedReplies() {
             const self = this;
@@ -212,56 +264,16 @@ export default {
         saveTicket() {
             const self = this;
             self.loading.form = true;
-            axios.post('api/dashboard/tickets', self.ticket).then(function (response) {
-                self.$notify({
-                    title: self.$i18n.t('Success').toString(),
-                    text: self.$i18n.t('Data saved correctly').toString(),
-                    type: 'success'
+
+            axios.post('api/dashboard/tickets', self.ticket)
+                .then(function () {
+                    self.$router.push({name: 'tickets'}); 
+                    self.loading.form = false;
+                })
+                .catch(function () {
+                    self.loading.form = false;
                 });
-                self.$router.push('/dashboard/tickets/' + response.data.ticket.uuid + '/manage');
-            }).catch(function () {
-                self.loading.form = false;
-            });
         },
-        selectUploadFile() {
-            if (!this.loading.file) {
-                this.$refs.fileInput.click();
-            } else {
-                this.$notify({
-                    title: this.$i18n.t('Error').toString(),
-                    text: this.$i18n.t('A file is being uploaded').toString(),
-                    type: 'warning'
-                });
-            }
-        },
-        uploadFile(e) {
-            const self = this;
-            const formData = new FormData();
-            self.loading.file = true;
-            formData.append('file', e.target.files[0]);
-            axios.post(
-                'api/dashboard/tickets/attachments',
-                formData,
-                {
-                    headers: {'Content-Type': 'multipart/form-data'},
-                    onUploadProgress: function (progressEvent) {
-                        self.uploadingFileProgress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                    }.bind(this)
-                }
-            ).then(function (response) {
-                self.loading.file = false;
-                self.uploadingFileProgress = 0;
-                self.$refs.fileInput.value = null;
-                self.ticket.attachments.push(response.data);
-            }).catch(function () {
-                self.loading.file = false;
-                self.uploadingFileProgress = 0;
-                self.$refs.fileInput.value = null;
-            });
-        },
-        removeAttachment(attachment) {
-            this.ticket.attachments.splice(attachment, 1);
-        }
-    },
+    }
 }
 </script>

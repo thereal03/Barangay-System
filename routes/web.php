@@ -15,3 +15,7 @@ Route::get('/rss-feed-proxy', function () {
 Route::get('/test', function () {
     return "Hello World";
 });
+
+// In web.php (Laravel routes)
+Route::delete('/dashboard/admin/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
+Route::get('/dashboard/admin/services/{id}/edit', [ServiceController::class, 'edit'])->name('services.edit');

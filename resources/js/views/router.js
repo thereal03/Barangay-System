@@ -157,7 +157,7 @@ let routes = [
                 meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.ServiceController'}
             },
             {
-                path: 'admin/services/:id', component: ServiceItem, 
+                path: 'admin/services/:id/edit', component: ServiceItem, 
                 meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.ServiceController'}
             },
             {
