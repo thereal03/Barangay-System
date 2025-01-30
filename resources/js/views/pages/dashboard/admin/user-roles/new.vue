@@ -60,30 +60,29 @@
                             </p>
                         </div>
                         <div class="mt-5 md:mt-0 md:col-span-2">
-                            <template v-for="(permissionKey) in permissionKeys">
-                                <div class="col-span-3">
-                                    <div class="mt-1 flex rounded-md">
-                                        <span
-                                            id="status"
-                                            :class="userRole.permissions.includes(permissionKey) ? 'bg-blue-600' : 'bg-gray-200'"
-                                            aria-checked="false"
-                                            class="relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline"
-                                            role="checkbox"
-                                            tabindex="0"
-                                            @click="userRole.permissions.includes(permissionKey) ? userRole.permissions.splice(userRole.permissions.indexOf(permissionKey), 1) : userRole.permissions.push(permissionKey)"
-                                        >
-                                          <span
-                                              :class="userRole.permissions.includes(permissionKey) ? 'translate-x-5' : 'translate-x-0'"
-                                              aria-hidden="true"
-                                              class="inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200"
-                                          ></span>
-                                        </span>
-                                        <div class="ml-3 text-gray-800">
-                                            {{ permissionLabels[permissionKey] }}
-                                        </div>
+                            <!-- Fixed: Moved :key to the actual div instead of <template> -->
+                            <div v-for="(permissionKey) in permissionKeys" :key="permissionKey" class="col-span-3">
+                                <div class="mt-1 flex rounded-md">
+                                    <span
+                                        id="status"
+                                        :class="userRole.permissions.includes(permissionKey) ? 'bg-blue-600' : 'bg-gray-200'"
+                                        aria-checked="false"
+                                        class="relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline"
+                                        role="checkbox"
+                                        tabindex="0"
+                                        @click="togglePermission(permissionKey)"
+                                    >
+                                      <span
+                                          :class="userRole.permissions.includes(permissionKey) ? 'translate-x-5' : 'translate-x-0'"
+                                          aria-hidden="true"
+                                          class="inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200"
+                                      ></span>
+                                    </span>
+                                    <div class="ml-3 text-gray-800">
+                                        {{ permissionLabels[permissionKey] }}
                                     </div>
                                 </div>
-                            </template>
+                            </div>
                         </div>
                     </div>
                     <div class="bg-gray-100 text-right px-4 py-3 sm:px-6">
@@ -120,7 +119,7 @@ export default {
         return {
             loading: true,
             permissionKeys: [],
-            permissionLabels: [],
+            permissionLabels: {},
             userRole: {
                 name: null,
                 dashboard_access: false,
@@ -133,31 +132,44 @@ export default {
     },
     methods: {
         saveUserRole() {
-            const self = this;
-            self.loading = true;
-            axios.post('api/dashboard/admin/user-roles', self.userRole).then(function (response) {
-                self.loading = false;
-                self.$notify({
-                    title: self.$i18n.t('Success').toString(),
-                    text: self.$i18n.t('Data saved correctly').toString(),
+            this.loading = true;
+            axios.post('api/dashboard/admin/user-roles', this.userRole).then(response => {
+                this.loading = false;
+                this.$notify({
+                    title: this.$i18n.t('Success').toString(),
+                    text: this.$i18n.t('Data saved correctly').toString(),
                     type: 'success'
                 });
-                self.$router.push('/dashboard/admin/user-roles/' + response.data.userRole.id + '/edit');
-            }).catch(function () {
-                self.loading = false;
+                this.$router.push('/dashboard/admin/user-roles/' + response.data.userRole.id + '/edit');
+            }).catch(() => {
+                this.loading = false;
             });
         },
         getPermissions() {
-            const self = this;
-            self.loading = true;
-            axios.get('api/dashboard/admin/user-roles/permissions').then(function (response) {
-                self.permissionKeys = response.data.keys;
-                self.permissionLabels = response.data.labels;
-                self.loading = false;
-            }).catch(function () {
-                self.loading = false;
+            this.loading = true;
+            axios.get('api/dashboard/admin/user-roles/permissions').then(response => {
+                this.permissionKeys = response.data.keys;
+                this.permissionLabels = response.data.labels;
+                
+                // Ensure "services" is included
+                if (!this.permissionKeys.includes('services')) {
+                    this.permissionKeys.push('services');
+                    this.permissionLabels['services'] = this.$i18n.t('Manage Services');
+                }
+
+                this.loading = false;
+            }).catch(() => {
+                this.loading = false;
             });
         },
+        togglePermission(permissionKey) {
+            const index = this.userRole.permissions.indexOf(permissionKey);
+            if (index > -1) {
+                this.userRole.permissions.splice(index, 1);
+            } else {
+                this.userRole.permissions.push(permissionKey);
+            }
+        }
     }
 }
 </script>
