@@ -47,6 +47,14 @@
             to="/dashboard/admin/services"
         ></menu-item>
 
+        <!-- Add Resident Menu Item -->
+        <menu-item
+            v-if="$store.state.permissions && $store.state.permissions['App.Http.Controllers.Api.Dashboard.Admin.ResidentController']"
+            :label="$t('Resident')"
+            :mobile="mobile"
+            icon="font-awesome.users-class-regular"
+            to="/dashboard/admin/resident"
+        ></menu-item>
 
         <menu-item
             v-if="$store.state.permissions && $store.state.permissions['App.Http.Controllers.Api.Dashboard.Admin.DepartmentController']"

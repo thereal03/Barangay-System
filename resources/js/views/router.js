@@ -70,6 +70,12 @@ import ServiceList from "@/views/pages/dashboard/admin/services/ServiceList";
 import ServiceItem from "@/views/pages/dashboard/admin/services/ServiceItem";
 import CreateService from '@/views/pages/dashboard/admin/services/CreateService';
 
+import CreateResident from "@/views/pages/dashboard/admin/resident/CreateResident";
+import ListResident from "@/views/pages/dashboard/admin/resident/ListResident";
+import EditResident from "@/views/pages/dashboard/admin/resident/EditResident";
+
+
+
 Vue.use(VueRouter);
 
 let routes = [
@@ -105,6 +111,10 @@ let routes = [
             {path: 'canned-replies', component: DashboardCannedRepliesList, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.CannedReplyController'}},
             {path: 'canned-replies/new', component: DashboardCannedRepliesNew, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.CannedReplyController'}},
             {path: 'canned-replies/:id/edit', component: DashboardCannedRepliesEdit, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.CannedReplyController'}},
+            
+            { path: 'admin/resident/create', component: CreateResident, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.ResidentController'} },
+            { path: 'admin/resident', component: ListResident, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.ResidentController'} },
+            { path: 'admin/resident/:id/edit', component: EditResident, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.ResidentController'} },
 
             {path: 'admin/departments', component: AdminDashboardDepartmentsList, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.DepartmentController'}},
             {path: 'admin/departments/new', component: AdminDashboardDepartmentsNew, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.DepartmentController'}},
@@ -154,6 +164,7 @@ let routes = [
                 path: 'admin/services/new', component: CreateService, 
                 meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.ServiceController'}
             },
+            
 
             {path: '*', component: DashboardNotFoundPage, meta: {middleware: 'auth', dashboard_access: true}},
         ]

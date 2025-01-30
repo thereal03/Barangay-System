@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\Ticket\TicketController as UserTicketController;
 use App\Http\Controllers\RSSController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Dashboard\Admin\ServiceController;
+use App\Http\Controllers\Api\Dashboard\Admin\ResidentController;
 
     // Move the 'services' routes inside the 'dashboard/admin' prefix
     Route::group(['prefix' => 'dashboard/admin'], static function () {
@@ -28,6 +29,28 @@ use App\Http\Controllers\Api\Dashboard\Admin\ServiceController;
         Route::put('services/{service}', [ServiceController::class, 'update']);
         Route::delete('services/{service}', [ServiceController::class, 'destroy']);
     });
+
+
+        // List all residents
+        Route::get('dashboard/admin/resident', [ResidentController::class, 'index'])
+            ->name('resident.index');
+        
+        // Show details of a specific resident
+        Route::get('dashboard/admin/resident/{id}', [ResidentController::class, 'show'])
+            ->name('resident.show');
+        
+        // Create a new resident
+        Route::post('dashboard/admin/resident', [ResidentController::class, 'store'])
+            ->name('resident.store');
+        
+        // Update a specific resident
+        Route::put('dashboard/admin/resident/{id}', [ResidentController::class, 'update'])
+            ->name('resident.update');
+        
+        // Delete a specific resident
+        Route::delete('dashboard/admin/resident/{id}', [ResidentController::class, 'destroy'])
+            ->name('resident.destroy');
+    
 
 Route::group(['prefix' => 'lang'], static function () {
     Route::get('/', [LanguageLanguageController::class, 'list'])->name('language.list');
@@ -100,5 +123,6 @@ Route::group(['prefix' => 'dashboard'], static function () {
 
         Route::post('languages/sync', [DashboardAdminLanguageController::class, 'sync'])->name('language.sync');
         Route::apiResource('languages', DashboardAdminLanguageController::class);
+
     });
 });
