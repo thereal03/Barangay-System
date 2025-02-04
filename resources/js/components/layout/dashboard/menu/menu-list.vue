@@ -43,7 +43,7 @@
             v-if="$store.state.permissions && $store.state.permissions['App.Http.Controllers.Api.Dashboard.Admin.ServiceController']"
             :label="$t('Services')"
             :mobile="mobile"
-            icon="font-awesome.users-class-regular"
+            icon="font-awesome.service-regular"
             to="/dashboard/admin/services"
         ></menu-item>
 
@@ -52,9 +52,10 @@
             v-if="$store.state.permissions && $store.state.permissions['App.Http.Controllers.Api.Dashboard.Admin.ResidentController']"
             :label="$t('Resident')"
             :mobile="mobile"
-            icon="font-awesome.users-class-regular"
+            icon="font-awesome.home-regular"
             to="/dashboard/admin/resident"
         ></menu-item>
+
 
         <menu-item
             v-if="$store.state.permissions && $store.state.permissions['App.Http.Controllers.Api.Dashboard.Admin.DepartmentController']"
@@ -129,3 +130,4 @@ export default {
     }
 }
 </script>
+
