@@ -92,18 +92,11 @@ export default {
       this.errors = {}; // Clear previous errors
 
       try {
-        const response = await axios.post('/api/dashboard/admin/services', this.service);
-        this.message = this.$t('Service created successfully!');
-        this.messageType = 'bg-green-100 text-green-700 p-3 rounded-md';
+        // Make the API call
+        await axios.post('/api/dashboard/admin/services', this.service);
 
-        // Reset the form
-        this.service.name = '';
-        this.service.description = '';
-
-        // Redirect after success
-        setTimeout(() => {
-          this.$router.push('/dashboard/admin/services');
-        }, 1000);
+        // Redirect immediately after the API call is initiated
+        this.$router.push('/dashboard/admin/services');
       } catch (error) {
         console.error('Error creating service:', error);
 
