@@ -125,7 +125,7 @@ thead {
   position: sticky;
   top: 0;
   background: white;
-  z-index: 10;
+  z-index: 5;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
