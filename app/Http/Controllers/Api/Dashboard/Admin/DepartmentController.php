@@ -114,4 +114,9 @@ class DepartmentController extends Controller
         $agents = User::whereIn('role_id', $roles)->where('status', true)->get();
         return response()->json(UserDetailsResource::collection($agents));
     }
+
+    public function departments()
+{
+    return response()->json(Department::all());
+}
 }

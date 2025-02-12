@@ -63,4 +63,10 @@ class ServiceController extends Controller
 
         return response()->json(['message' => 'Service deleted successfully']);
     }
+
+    public function publicIndex()
+{
+    return response()->json(Service::all()); // Return all services
+}
+
 }

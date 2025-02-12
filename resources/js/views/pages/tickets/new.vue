@@ -157,7 +157,7 @@ export default {
         getServices() {
             const self = this;
             self.loading.form = true;
-            axios.get('api/dashboard/admin/services').then(function (response) {
+            axios.get('api/services').then(function (response) {
                 self.serviceList = response.data; // Make sure this is the correct data path
                 self.loading.form = false;
             }).catch(function () {

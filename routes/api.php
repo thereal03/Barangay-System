@@ -21,8 +21,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Dashboard\Admin\ServiceController;
 use App\Http\Controllers\Api\Dashboard\Admin\ResidentController;
 
+
+    Route::get('services', [ServiceController::class, 'index']);
     // Move the 'services' routes inside the 'dashboard/admin' prefix
     Route::group(['prefix' => 'dashboard/admin'], static function () {
+        Route::get('/services', [ServiceController::class, 'publicIndex']); // Public endpoint
         Route::get('services', [ServiceController::class, 'index']);
         Route::get('services/{service}', [ServiceController::class, 'show']);
         Route::post('services', [ServiceController::class, 'store']);
