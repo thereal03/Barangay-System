@@ -50,4 +50,9 @@ class Department extends Model
             ->where('status', true)
             ->get();
     }
+    public function tickets()
+{
+    return $this->hasMany(Ticket::class, 'department_id'); // Ensure correct foreign key
+}
+
 }

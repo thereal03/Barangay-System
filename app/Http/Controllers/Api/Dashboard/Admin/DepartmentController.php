@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Dashboard\Admin;
 
 use App\Http\Controllers\Controller;
+
 use App\Http\Requests\Dashboard\Admin\Department\StoreRequest;
 use App\Http\Requests\Dashboard\Admin\Department\UpdateRequest;
 use App\Http\Resources\Department\DepartmentDetailsResource;
@@ -119,4 +120,17 @@ class DepartmentController extends Controller
 {
     return response()->json(Department::all());
 }
+
+public function ticketCounts()
+{
+    $ticketCounts = Department::withCount('tickets')->get()->map(function ($department) {
+        return [
+            'department_id' => $department->id,
+            'count' => $department->tickets_count
+        ];
+    });
+
+    return response()->json($ticketCounts);
+}
+
 }

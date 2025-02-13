@@ -11,6 +11,13 @@
                 <div class="py-4">
                     <opened-tickets/>
                 </div>
+                <!-- Add new analytics components here -->
+                <div class="py-4">
+                    <user-engagement/>
+                </div>
+                <div class="py-4">
+                    <sales-performance/>
+                </div>
             </template>
         </div>
     </main>
@@ -19,6 +26,8 @@
 <script>
 import Stats from "@/components/widgets/stats";
 import OpenedTickets from "@/components/widgets/opened-tickets";
+import UserEngagement from "@/components/widgets/UserEngagement"; // Import the new component
+import SalesPerformance from "@/components/widgets/SalesPerformance"; // Import the new component
 
 export default {
     name: "home",
@@ -27,6 +36,11 @@ export default {
             title: this.$i18n.t('Dashboard')
         }
     },
-    components: {OpenedTickets, Stats}
+    components: {
+        OpenedTickets,
+        Stats,
+        UserEngagement, // Register the new component
+        SalesPerformance // Register the new component
+    }
 }
 </script>

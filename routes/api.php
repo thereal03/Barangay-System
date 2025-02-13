@@ -20,7 +20,10 @@ use App\Http\Controllers\RSSController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Dashboard\Admin\ServiceController;
 use App\Http\Controllers\Api\Dashboard\Admin\ResidentController;
+use App\Http\Controllers\Api\Dashboard\Admin\DepartmentController;
 
+
+    Route::get('/dashboard/admin/departments/ticket-counts', [DepartmentController::class, 'ticketCounts']);
 
     Route::get('services', [ServiceController::class, 'index']);
     // Move the 'services' routes inside the 'dashboard/admin' prefix
