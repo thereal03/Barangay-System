@@ -9,6 +9,7 @@ use App\Http\Requests\Dashboard\Ticket\TicketReplyRequest;
 use App\Http\Requests\File\StoreFileRequest;
 use App\Http\Resources\CannedReply\CannedReplyResource;
 use App\Http\Resources\Department\DepartmentSelectResource;
+use App\Http\Resources\Service\ServiceSelectResource;
 use App\Http\Resources\Label\LabelSelectResource;
 use App\Http\Resources\Priority\PriorityResource;
 use App\Http\Resources\Status\StatusResource;
@@ -21,6 +22,7 @@ use App\Models\Label;
 use App\Models\Priority;
 use App\Models\Setting;
 use App\Models\Status;
+use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\TicketReply;
 use App\Models\User;
@@ -56,7 +58,8 @@ class TicketController extends Controller
         $user = Auth::user();
         $sort = json_decode($request->get('sort', json_encode(['order' => 'asc', 'column' => 'created_at'], JSON_THROW_ON_ERROR)), true, 512, JSON_THROW_ON_ERROR);
         if ($user->role_id !== 1) {
-            $items = Ticket::filter($request->all())
+            $items = Ticket::with(['service', 'status', 'priority', 'department', 'user', 'agent', 'closedBy']) // Include the necessary relationships
+                ->filter($request->all())
                 ->where(function (Builder $query) use ($user) {
                     $query->where('agent_id', $user->id);
                     $query->orWhere('closed_by', $user->id);
@@ -70,7 +73,8 @@ class TicketController extends Controller
                 ->orderBy($sort['column'], $sort['order'])
                 ->paginate((int) $request->get('perPage', 10));
         } else {
-            $items = Ticket::filter($request->all())
+            $items = Ticket::with(['service', 'status', 'priority', 'department', 'user', 'agent', 'closedBy']) // Include the necessary relationships
+                ->filter($request->all())
                 ->orderBy($sort['column'], $sort['order'])
                 ->paginate((int) $request->get('perPage', 10));
         }
@@ -103,6 +107,9 @@ class TicketController extends Controller
         $ticket->department_id = $request->get('department_id');
         $ticket->user_id = $request->get('user_id');
         $ticket->agent_id = Auth::id();
+        if ($request->has('service_id')) {
+            $ticket->service_id = $request->get('service_id'); // Ensure this line is present to save service_id
+        }
         $ticket->saveOrFail();
         $ticketReply = new TicketReply();
         $ticketReply->user_id = Auth::id();
@@ -197,7 +204,7 @@ class TicketController extends Controller
     {
         $roles = UserRole::where('dashboard_access', true)->pluck('id');
         $agents = User::whereIn('role_id', $roles)->where('status', true)->get();
-
+        
         return response()->json([
             'agents' => UserDetailsResource::collection($agents),
             'customers' => UserDetailsResource::collection(User::where('status', true)->get()),
@@ -205,6 +212,7 @@ class TicketController extends Controller
             'labels' => LabelSelectResource::collection(Label::all()),
             'statuses' => StatusResource::collection(Status::all()),
             'priorities' => PriorityResource::collection(Priority::orderBy('value')->get()),
+            'services' => ServiceSelectResource::collection(Service::all()),
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Ticket;
 
 use App\Http\Resources\Department\DepartmentSelectResource;
+use App\Http\Resources\Service\ServiceResource;
 use App\Http\Resources\TicketReply\TicketReplyDetailsResource;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
@@ -26,6 +27,8 @@ class TicketDetailsResource extends JsonResource
             'subject' => $ticket->subject,
             'department' => new DepartmentSelectResource($ticket->department),
             'department_id' => $ticket->department_id,
+            'service' => new ServiceResource($ticket->service), // Include the service relationship
+            'service_id' => $ticket->service_id,
             'created_at' => $ticket->created_at->toISOString(),
             'updated_at' => $ticket->updated_at->toISOString(),
             'ticketReplies' => TicketReplyDetailsResource::collection($ticket->ticketReplies()->orderByDesc('created_at')->get()),

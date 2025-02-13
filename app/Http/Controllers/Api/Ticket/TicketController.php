@@ -44,7 +44,8 @@ class TicketController extends Controller
     public function index(Request $request): JsonResponse
     {
         $sort = json_decode($request->get('sort', json_encode(['order' => 'asc', 'column' => 'created_at'], JSON_THROW_ON_ERROR)), true, 512, JSON_THROW_ON_ERROR);
-        $items = Ticket::filter($request->all())
+        $items = Ticket::with(['service', 'status', 'priority', 'department', 'user', 'agent', 'closedBy']) // Include the necessary relationships
+            ->filter($request->all())
             ->where('user_id', Auth::id())
             ->orderBy($sort['column'], $sort['order'])
             ->paginate((int) $request->get('perPage', 10));
@@ -75,6 +76,9 @@ class TicketController extends Controller
         $ticket->status_id = 1;
         if ($request->has('department_id')) {
             $ticket->department_id = $request->get('department_id');
+        }
+        if ($request->has('service_id')) {
+            $ticket->service_id = $request->get('service_id'); // Ensure this line is present to save service_id
         }
         $ticket->user_id = Auth::id();
         $ticket->saveOrFail();

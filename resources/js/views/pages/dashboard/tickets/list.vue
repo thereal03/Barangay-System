@@ -187,6 +187,19 @@
                                                             </div>
                                                             <div class="col-span-3 mb-2">
                                                                 <label class="block text-sm font-medium leading-5 text-gray-700" for="label">
+                                                                    {{ $t('Services') }}
+                                                                </label>
+                                                                <input-select
+                                                                    id="service"
+                                                                    v-model="filters.services"
+                                                                    :options="serviceList"
+                                                                    multiple
+                                                                    option-label="name"
+                                                                    @change="getTickets"
+                                                                />
+                                                            </div>
+                                                            <div class="col-span-3 mb-2">
+                                                                <label class="block text-sm font-medium leading-5 text-gray-700" for="label">
                                                                     {{ $t('Sort') }}
                                                                 </label>
                                                                 <div class="relative inline-flex w-full">
@@ -220,6 +233,7 @@
                                                                         <option value="department_id">{{ $t('Department') }}</option>
                                                                         <option value="user_id">{{ $t('User') }}</option>
                                                                         <option value="agent_id">{{ $t('Agent') }}</option>
+                                                                        <option value="service_id">{{ $t('Service') }}</option>
                                                                         <option value="created_at">{{ $t('Created at') }}</option>
                                                                         <option value="updated_at">{{ $t('Updated at') }}</option>
                                                                         <option value="closed_at">{{ $t('Closed at') }}</option>
@@ -347,6 +361,27 @@
                             </div>
                         </div>
                     </div>
+                    <div class="relative inline-block text-left">
+                        <button class="btn hover:bg-gray-100 p-4 border-r border-gray-200 rounded-none" type="button" @click="toggleQuickActionDropdown('service')">
+                            <svg-vue class="h-6 w-6 text-gray-700" icon="font-awesome.cog-regular"></svg-vue>
+                        </button>
+                        <div v-show="quickActions.service" class="origin-top-right absolute left-0 mt-1 w-56 rounded-md shadow-lg">
+                            <div class="rounded-md bg-white shadow-xs">
+                                <div class="py-1">
+                                    <template v-for="service in serviceList">
+                                        <a
+                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                            href="#"
+                                            role="menuitem"
+                                            @click.prevent="quickAction('service', service.id)"
+                                        >
+                                            {{ service.name }}
+                                        </a>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <button class="btn hover:bg-gray-100 p-4 border-r border-gray-200 rounded-none" type="button" @click="toggleQuickActionDropdown('delete')">
                         <svg-vue class="h-6 w-6 text-gray-700" icon="font-awesome.trash-alt-regular"></svg-vue>
                     </button>
@@ -413,6 +448,9 @@
                                 </th>
                                 <th class="px-3 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
                                     {{ $t('Agent') }}
+                                </th>
+                                <th class="px-3 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
+                                    {{ $t('Service') }}
                                 </th>
                                 <th class="px-3 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
                                     {{ $t('Updated at') }}
@@ -486,6 +524,11 @@
                                     <td class="px-3 py-4 whitespace-no-wrap leading-5">
                                         <div class="text-sm leading-5 text-gray-900">
                                             {{ ticket.agent ? ticket.agent.name : $t('Unassigned') }}
+                                        </div>
+                                    </td>
+                                    <td class="px-3 py-4 whitespace-no-wrap leading-5">
+                                        <div class="text-sm leading-5 text-gray-900">
+                                            {{ ticket.service ? ticket.service.name : $t('Unassigned') }}
                                         </div>
                                     </td>
                                     <td class="px-3 py-4 whitespace-no-wrap leading-5">
@@ -650,12 +693,14 @@ export default {
                 labels: [],
                 statuses: [1, 2],
                 priorities: [],
+                services: [],
             },
             quickActions: {
                 agent: false,
                 department: false,
                 label: false,
                 priority: false,
+                service: false,
                 delete: false,
             },
             sort: {
@@ -675,6 +720,7 @@ export default {
             labelList: [],
             statusList: [],
             priorityList: [],
+            serviceList: [],
             ticketList: [],
             selectAll: false,
             selectedRows: [],
@@ -688,7 +734,8 @@ export default {
                 || this.filters.departments.length !== 0
                 || this.filters.labels.length !== 0
                 || this.filters.statuses.length !== 0
-                || this.filters.priorities.length !== 0;
+                || this.filters.priorities.length !== 0
+                || this.filters.services.length !== 0;
         }
     },
     filters: {
@@ -717,6 +764,7 @@ export default {
             this.quickActions.department = false;
             this.quickActions.label = false;
             this.quickActions.priority = false;
+            this.quickActions.service = false;
             this.quickActions.delete = false;
         },
         toggleQuickActionDropdown(quickAction) {
@@ -725,6 +773,7 @@ export default {
                 this.quickActions.department = false;
                 this.quickActions.label = false;
                 this.quickActions.priority = false;
+                this.quickActions.service = false;
                 this.quickActions.delete = false;
             }
             if (quickAction === 'department') {
@@ -732,6 +781,7 @@ export default {
                 this.quickActions.agent = false;
                 this.quickActions.label = false;
                 this.quickActions.priority = false;
+                this.quickActions.service = false;
                 this.quickActions.delete = false;
             }
             if (quickAction === 'label') {
@@ -739,6 +789,7 @@ export default {
                 this.quickActions.agent = false;
                 this.quickActions.department = false;
                 this.quickActions.priority = false;
+                this.quickActions.service = false;
                 this.quickActions.delete = false;
             }
             if (quickAction === 'priority') {
@@ -746,6 +797,15 @@ export default {
                 this.quickActions.agent = false;
                 this.quickActions.department = false;
                 this.quickActions.label = false;
+                this.quickActions.service = false;
+                this.quickActions.delete = false;
+            }
+            if (quickAction === 'service') {
+                this.quickActions.service = !this.quickActions.service;
+                this.quickActions.agent = false;
+                this.quickActions.department = false;
+                this.quickActions.label = false;
+                this.quickActions.priority = false;
                 this.quickActions.delete = false;
             }
             if (quickAction === 'delete') {
@@ -754,6 +814,7 @@ export default {
                 this.quickActions.department = false;
                 this.quickActions.label = false;
                 this.quickActions.priority = false;
+                this.quickActions.service = false;
             }
         },
         changePage(page) {
@@ -802,6 +863,7 @@ export default {
                     labels: self.filters.labels,
                     statuses: self.filters.statuses,
                     priorities: self.filters.priorities,
+                    services: self.filters.services,
                 }
             }).then(function (response) {
                 self.ticketList = response.data.items;
@@ -828,6 +890,7 @@ export default {
                 self.labelList = response.data.labels;
                 self.statusList = response.data.statuses;
                 self.priorityList = response.data.priorities;
+                self.serviceList = response.data.services;
             });
         },
         quickAction(param, value) {

@@ -24,6 +24,7 @@ class CreateTicketsTable extends Migration
                 $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
                 $table->foreignId('agent_id')->nullable()->constrained('users')->nullOnDelete();
                 $table->foreignId('closed_by')->nullable()->constrained('users')->nullOnDelete();
+                $table->foreignId('service_id')->nullable()->constrained('services')->nullOnDelete(); // Add this line
                 $table->timestamp('closed_at')->nullable();
                 $table->timestamps();
             });

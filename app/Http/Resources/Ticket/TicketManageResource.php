@@ -11,6 +11,7 @@ use App\Http\Resources\User\UserDetailsResource;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Service\ServiceResource;
 
 class TicketManageResource extends JsonResource
 {
@@ -34,6 +35,8 @@ class TicketManageResource extends JsonResource
             'priority_id' => $ticket->priority_id,
             'department' => new DepartmentSelectResource($ticket->department),
             'department_id' => $ticket->department_id,
+            'service' => new ServiceResource($ticket->service),
+            'service_id' => $ticket->service_id,
             'labels' => LabelSelectResource::collection($ticket->labels),
             'user' => new UserDetailsResource($ticket->user),
             'user_id' => $ticket->user_id,

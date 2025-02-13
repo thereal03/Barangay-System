@@ -114,6 +114,11 @@ class Ticket extends Model
         return $this->hasMany(TicketReply::class);
     }
 
+    public function service(): BelongsTo
+    {
+        return $this->belongsTo(Service::class);
+    }
+    
     public function labels(): BelongsToMany
     {
         return $this->belongsToMany(Label::class, 'ticket_labels');

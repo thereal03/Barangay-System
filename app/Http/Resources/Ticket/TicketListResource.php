@@ -11,6 +11,7 @@ use App\Http\Resources\User\UserDetailsResource;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Service\ServiceResource;
 
 class TicketListResource extends JsonResource
 {
@@ -38,7 +39,8 @@ class TicketListResource extends JsonResource
             'closedBy' => new UserDetailsResource($ticket->closedBy),
             'closed_at' => $ticket->closed_at ? $ticket->closed_at->toISOString() : null,
             'created_at' => $ticket->created_at->toISOString(),
-            'updated_at' => $ticket->updated_at->toISOString()
+            'updated_at' => $ticket->updated_at->toISOString(),
+            'service' => new ServiceResource($ticket->service), // Include the service relationship
         ];
     }
 }
