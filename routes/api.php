@@ -22,6 +22,8 @@ use App\Http\Controllers\Api\Dashboard\Admin\ServiceController;
 use App\Http\Controllers\Api\Dashboard\Admin\ResidentController;
 use App\Http\Controllers\Api\Dashboard\Admin\DepartmentController;
 use App\Http\Controllers\Api\Dashboard\Admin\BlotterController;
+use Illuminate\Support\Facades\Storage;
+
 
     Route::get('/dashboard/admin/services', [ServiceController::class, 'index']);
     Route::post('/dashboard/admin/services/{id}/upload-docx', [ServiceController::class, 'uploadDocx']);
