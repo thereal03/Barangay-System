@@ -126,6 +126,7 @@ Route::group(['prefix' => 'dashboard'], static function () {
         Route::get('settings/languages', [DashboardAdminSettingController::class, 'languages'])->name('settings.languages');
         Route::get('settings/general', [DashboardAdminSettingController::class, 'getGeneral'])->name('settings.get.general');
         Route::post('settings/general', [DashboardAdminSettingController::class, 'setGeneral'])->name('settings.set.general');
+        Route::get('settings/seo', [DashboardAdminSettingController::class, 'getSeo'])->name('settings.set.seo');
 
         Route::post('languages/sync', [DashboardAdminLanguageController::class, 'sync'])->name('language.sync');
         Route::apiResource('languages', DashboardAdminLanguageController::class);
