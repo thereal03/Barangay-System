@@ -19,3 +19,13 @@ Route::get('/test', function () {
 // In web.php (Laravel routes)
 Route::delete('/dashboard/admin/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
 Route::get('/dashboard/admin/services/{id}/edit', [ServiceController::class, 'edit'])->name('services.edit');
+
+Route::get('/services/{id}/view-docx', function ($id) {
+    $service = Service::findOrFail($id);
+    
+    if (!$service->docx) {
+        abort(404);
+    }
+
+    return Response::download(storage_path("app/public/" . str_replace("storage/", "", $service->docx)));
+});
