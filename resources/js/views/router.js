@@ -74,7 +74,9 @@ import CreateResident from "@/views/pages/dashboard/admin/resident/CreateResiden
 import ListResident from "@/views/pages/dashboard/admin/resident/ListResident";
 import EditResident from "@/views/pages/dashboard/admin/resident/EditResident";
 
-
+import CreateBlotter from "@/views/pages/dashboard/admin/blotter/create";
+import ListBlotter from "@/views/pages/dashboard/admin/blotter/list";
+import EditBlotter from "@/views/pages/dashboard/admin/blotter/edit";
 
 Vue.use(VueRouter);
 
@@ -115,6 +117,10 @@ let routes = [
             { path: 'admin/resident/create', component: CreateResident, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.ResidentController'} },
             { path: 'admin/resident', component: ListResident, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.ResidentController'} },
             { path: 'admin/resident/:id/edit', component: EditResident, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.ResidentController'} },
+
+            { path: 'admin/blotter/create', component: CreateBlotter, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.BlotterController'} },
+            { path: 'admin/blotter', component: ListBlotter, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.BlotterController'} },
+            { path: 'admin/blotter/:id/edit', component: EditBlotter, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.BlotterController'} },
 
             {path: 'admin/departments', component: AdminDashboardDepartmentsList, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.DepartmentController'}},
             {path: 'admin/departments/new', component: AdminDashboardDepartmentsNew, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.DepartmentController'}},

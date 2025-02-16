@@ -21,8 +21,28 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Dashboard\Admin\ServiceController;
 use App\Http\Controllers\Api\Dashboard\Admin\ResidentController;
 use App\Http\Controllers\Api\Dashboard\Admin\DepartmentController;
+use App\Http\Controllers\Api\Dashboard\Admin\BlotterController;
 
-
+    // List all blotters
+    Route::get('dashboard/admin/blotter', [BlotterController::class, 'index'])
+        ->name('blotter.index');
+    
+    // Show details of a specific blotter
+    Route::get('dashboard/admin/blotter/{id}', [BlotterController::class, 'show'])
+        ->name('blotter.show');
+    
+    // Create a new blotter
+    Route::post('dashboard/admin/blotter', [BlotterController::class, 'store'])
+        ->name('blotter.store');
+    
+    // Update a specific blotter
+    Route::put('dashboard/admin/blotter/{id}', [BlotterController::class, 'update'])
+        ->name('blotter.update');
+    
+    // Delete a specific blotter
+    Route::delete('dashboard/admin/blotter/{id}', [BlotterController::class, 'destroy'])
+        ->name('blotter.destroy');
+        
     Route::get('/dashboard/admin/departments/ticket-counts', [DepartmentController::class, 'ticketCounts']);
 
     Route::get('services', [ServiceController::class, 'index']);

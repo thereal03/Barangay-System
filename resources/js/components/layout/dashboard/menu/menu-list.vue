@@ -56,7 +56,15 @@
             to="/dashboard/admin/resident"
         ></menu-item>
 
-
+        <!-- Add Blotter Menu Item -->
+        <menu-item
+            v-if="$store.state.permissions && $store.state.permissions['App.Http.Controllers.Api.Dashboard.Admin.BlotterController']"
+            :label="$t('Blotter')"
+            :mobile="mobile"
+            icon="font-awesome.handcuffs-solid"
+            to="/dashboard/admin/blotter"
+        ></menu-item>
+        
         <menu-item
             v-if="$store.state.permissions && $store.state.permissions['App.Http.Controllers.Api.Dashboard.Admin.DepartmentController']"
             :label="$t('Departments')"
