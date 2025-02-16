@@ -28,7 +28,7 @@ class ResidentController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'dob' => 'required|date',
+            'dob' => 'required|string|max:10',
             'gender' => 'required|string|max:50',
             'address' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:20',
@@ -48,7 +48,7 @@ class ResidentController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'dob' => 'required|date',
+            'dob' => 'required|string|max:10',
             'gender' => 'required|string|max:50',
             'address' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:20',
