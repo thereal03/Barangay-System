@@ -153,15 +153,15 @@ export default {
     },
 
     confirmDelete(serviceId) {
-      this.deletingServiceId = serviceId;
-      this.showModal = true;
+      if (confirm("Are you sure you want to delete this service?")) {
+        this.deleteService(serviceId);
+      }
     },
 
     async deleteService(serviceId) {
       try {
         await axios.delete(`/api/dashboard/admin/services/${serviceId}`);
         this.services = this.services.filter((service) => service.id !== serviceId);
-        this.showModal = false;
       } catch (error) {
         console.error(error);
       }
@@ -169,11 +169,8 @@ export default {
 
     triggerFileUpload(serviceId) {
       const fileInput = this.$refs['fileInput' + serviceId];
-
       if (fileInput && fileInput[0]) {
         fileInput[0].click();
-      } else {
-        console.error(`File input for service ${serviceId} not found.`);
       }
     },
 
@@ -231,6 +228,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 /* Add some transition effects for smooth animations */
