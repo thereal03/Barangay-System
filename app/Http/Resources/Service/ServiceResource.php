@@ -18,6 +18,10 @@ class ServiceResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'docx' => $this->docx ? asset($this->docx) : null,
         ];
     }
+
+    
 }
+

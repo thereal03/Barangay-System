@@ -1,5 +1,5 @@
 <template>
-  <main class="flex-1 relative overflow-y-auto py-6 focus:outline-none" tabindex="0">
+  <main class="flex-1 relative overflow-y-auto py-6 focus:outline-none">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-5">
       <div class="md:flex md:items-center md:justify-between">
         <div class="flex-1 min-w-0">
@@ -29,7 +29,6 @@
             >
               <div class="flex justify-between items-center">
                 <div>
-                  <!-- Edit link updated here -->
                   <router-link
                     :to="`/dashboard/admin/services/${service.id}/edit`"
                     class="text-lg font-semibold text-gray-900 hover:text-blue-600"
@@ -38,6 +37,8 @@
                   </router-link>
                   <p class="text-sm text-gray-600 mt-1">{{ service.description }}</p>
                 </div>
+                
+                <!-- Delete Button -->
                 <button
                   @click="confirmDelete(service.id)"
                   class="p-2 text-red-600 hover:text-red-800 hover:bg-red-100 rounded-md transition duration-200"
@@ -54,6 +55,41 @@
                   </svg>
                 </button>
               </div>
+
+              <!-- DOCX Upload -->
+              <div class="mt-4">
+                <input
+                  type="file"
+                  :ref="'fileInput' + service.id"
+                  @change="handleFileUpload($event, service.id)"
+                  accept=".docx"
+                  class="hidden"
+                />
+                
+                <button
+                  @click="triggerFileUpload(service.id)"
+                  class="px-4 py-2 text-white bg-green-600 hover:bg-green-700 rounded-md shadow-md transition duration-200"
+                >
+                  {{ $t('Upload DOCX') }}
+                </button>
+
+                <button
+                  v-if="selectedFiles[service.id]"
+                  @click="uploadFile(service.id)"
+                  class="ml-2 px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-md transition duration-200"
+                >
+                  {{ $t('Save') }}
+                </button>
+
+                <!-- View & Edit DOCX -->
+                <button
+                  v-if="service.docx"
+                  @click="fetchDocx(service.id)"
+                  class="mt-2 px-4 py-2 text-white bg-purple-600 hover:bg-purple-700 rounded-md shadow-md transition duration-200"
+                >
+                  {{ $t('Edit DOCX') }}
+                </button>
+              </div>
             </div>
           </div>
         </template>
@@ -67,23 +103,16 @@
       </div>
     </div>
 
-    <!-- Enhanced Confirmation Modal -->
-    <div v-if="showModal" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm mx-auto">
-        <h2 class="text-xl font-semibold text-gray-800">{{ $t('Are you sure you want to delete this service?') }}</h2>
-        <div class="flex justify-between mt-4">
-          <button
-            @click="deleteService(deletingServiceId)"
-            class="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-lg shadow-lg hover:from-red-600 hover:to-red-700 focus:outline-none transition-all duration-300 transform hover:scale-105"
-          >
-            {{ $t('Yes') }}
-          </button>
-          <button
-            @click="cancelDelete"
-            class="px-6 py-3 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800 font-semibold rounded-lg shadow-lg hover:from-gray-400 hover:to-gray-500 focus:outline-none transition-all duration-300 transform hover:scale-105"
-          >
-            {{ $t('No') }}
-          </button>
+    <!-- Modal for Editing DOCX -->
+    <div v-if="showDocxEditor" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div class="bg-white p-6 rounded-md w-3/4">
+        <h2 class="text-lg font-semibold mb-4">Edit DOCX</h2>
+
+        <editor v-model="docxContent" />
+
+        <div class="mt-4 flex justify-end">
+          <button @click="showDocxEditor = false" class="mr-2 px-4 py-2 bg-gray-400 text-white rounded-md">Cancel</button>
+          <button @click="saveDocx" class="px-4 py-2 bg-blue-600 text-white rounded-md">Save</button>
         </div>
       </div>
     </div>
@@ -92,20 +121,20 @@
 
 <script>
 import axios from "axios";
+import Editor from "@tinymce/tinymce-vue";
 
 export default {
-  name: "ServiceList",
-  metaInfo() {
-    return {
-      title: this.$i18n.t("Services"),
-    };
-  },
+  components: { Editor },
   data() {
     return {
       loading: true,
       services: [],
       showModal: false,
       deletingServiceId: null,
+      selectedFiles: {}, 
+      showDocxEditor: false,
+      docxContent: "",
+      editingServiceId: null,
     };
   },
   mounted() {
@@ -122,20 +151,79 @@ export default {
         console.error(error);
       }
     },
+
     confirmDelete(serviceId) {
       this.deletingServiceId = serviceId;
       this.showModal = true;
     },
-    cancelDelete() {
-      this.showModal = false;
-      this.deletingServiceId = null;
-    },
+
     async deleteService(serviceId) {
       try {
         await axios.delete(`/api/dashboard/admin/services/${serviceId}`);
         this.services = this.services.filter((service) => service.id !== serviceId);
-        this.showModal = false; // Close the modal
-        this.deletingServiceId = null; // Reset deletingServiceId
+        this.showModal = false;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    triggerFileUpload(serviceId) {
+      const fileInput = this.$refs['fileInput' + serviceId];
+
+      if (fileInput && fileInput[0]) {
+        fileInput[0].click();
+      } else {
+        console.error(`File input for service ${serviceId} not found.`);
+      }
+    },
+
+    handleFileUpload(event, serviceId) {
+      const file = event.target.files[0];
+      if (file) {
+        this.$set(this.selectedFiles, serviceId, file);
+      }
+    },
+
+    async uploadFile(serviceId) {
+      if (!this.selectedFiles[serviceId]) {
+        alert("No file selected.");
+        return;
+      }
+
+      let formData = new FormData();
+      formData.append("docx", this.selectedFiles[serviceId]);
+
+      try {
+        await axios.post(`/api/dashboard/admin/services/${serviceId}/upload-docx`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        alert("DOCX file uploaded successfully!");
+        this.$delete(this.selectedFiles, serviceId);
+        this.fetchServices();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    async fetchDocx(serviceId) {
+      try {
+        const response = await axios.get(`/api/dashboard/admin/services/${serviceId}/view-docx`);
+        this.docxContent = response.data.html;
+        this.editingServiceId = serviceId;
+        this.showDocxEditor = true;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    async saveDocx() {
+      try {
+        await axios.post(`/api/dashboard/admin/services/${this.editingServiceId}/save-docx`, {
+          html: this.docxContent,
+        });
+        alert("Document updated successfully!");
+        this.showDocxEditor = false;
       } catch (error) {
         console.error(error);
       }

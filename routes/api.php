@@ -23,6 +23,10 @@ use App\Http\Controllers\Api\Dashboard\Admin\ResidentController;
 use App\Http\Controllers\Api\Dashboard\Admin\DepartmentController;
 
 
+    Route::get('/dashboard/admin/services', [ServiceController::class, 'index']);
+    Route::post('/dashboard/admin/services/{id}/upload-docx', [ServiceController::class, 'uploadDocx']);
+    Route::get('/dashboard/admin/services/{id}/view-docx', [ServiceController::class, 'viewDocx']);
+    Route::post('/dashboard/admin/services/{id}/save-docx', [ServiceController::class, 'saveDocx']);
     Route::get('/dashboard/admin/departments/ticket-counts', [DepartmentController::class, 'ticketCounts']);
 
     Route::get('services', [ServiceController::class, 'index']);
