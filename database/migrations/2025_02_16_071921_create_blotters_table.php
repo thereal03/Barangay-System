@@ -15,7 +15,8 @@ return new class extends Migration {
             $table->text('incident_location');
             $table->dateTime('incident_date');
             $table->enum('status', ['Pending', 'Resolved', 'Dismissed'])->default('Pending');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

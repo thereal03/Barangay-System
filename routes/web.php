@@ -16,10 +16,6 @@ Route::get('/test', function () {
     return "Hello World";
 });
 
-// In web.php (Laravel routes)
-Route::delete('/dashboard/admin/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
-Route::get('/dashboard/admin/services/{id}/edit', [ServiceController::class, 'edit'])->name('services.edit');
-
 Route::get('/services/{id}/view-docx', function ($id) {
     $service = Service::findOrFail($id);
     
