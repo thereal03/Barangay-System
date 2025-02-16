@@ -57,19 +57,11 @@
               </div>
 
               <!-- DOCX Actions -->
-              <div class="mt-4 space-y-2">
-                <input
-                  type="file"
-                  :ref="'fileInput' + service.id"
-                  @change="handleFileUpload($event, service.id)"
-                  accept=".docx"
-                  class="hidden"
-                />
-                
-                <div class="flex flex-wrap gap-2">
+              <div class="mt-4">
+                <div class="flex flex-wrap gap-3">
                   <button
                     @click="triggerFileUpload(service.id)"
-                    class="px-4 py-2 text-white bg-green-600 hover:bg-green-700 rounded-md shadow-md transition duration-200"
+                    class="flex-1 px-4 py-2 text-white bg-green-600 hover:bg-green-700 rounded-md shadow-md transition duration-200"
                   >
                     {{ $t('Upload DOCX') }}
                   </button>
@@ -77,17 +69,17 @@
                   <button
                     v-if="selectedFiles[service.id]"
                     @click="uploadFile(service.id)"
-                    class="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-md transition duration-200"
+                    class="flex-1 px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-md transition duration-200"
                   >
                     {{ $t('Save') }}
                   </button>
                 </div>
 
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap gap-3 mt-2">
                   <button
                     v-if="service.docx"
                     @click="fetchDocx(service.id)"
-                    class="px-4 py-2 text-white bg-purple-600 hover:bg-purple-700 rounded-md shadow-md transition duration-200"
+                    class="flex-1 px-4 py-2 text-white bg-purple-600 hover:bg-purple-700 rounded-md shadow-md transition duration-200"
                   >
                     {{ $t('Edit DOCX') }}
                   </button>
@@ -95,7 +87,7 @@
                   <a
                     v-if="service.docx"
                     :href="`/storage/uploads/docx/${service.docx}`"
-                    class="px-4 py-2 text-white bg-yellow-600 hover:bg-yellow-700 rounded-md shadow-md transition duration-200"
+                    class="flex-1 px-4 py-2 text-white bg-yellow-600 hover:bg-yellow-700 rounded-md shadow-md transition duration-200 text-center"
                     download
                   >
                     {{ $t('Download DOCX') }}
