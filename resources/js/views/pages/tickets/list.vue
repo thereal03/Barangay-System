@@ -236,7 +236,7 @@ export default {
       }); // Example format: "January 25, 2025, 11:55:18 AM"
     },
     fetchRSS() {
-      axios.get('http://127.0.0.1:8000/api/rss')
+      axios.get('https://ebarangeles.com/api/rss')
         .then(response => {
           this.articles = response.data;
           this.loading = false;
