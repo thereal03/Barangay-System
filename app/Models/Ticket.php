@@ -132,4 +132,6 @@ class Ticket extends Model
         }
         return true;
     }
+    
+    
 }

@@ -56,28 +56,37 @@ class TicketController extends Controller
     {
         /** @var User $user */
         $user = Auth::user();
-        $sort = json_decode($request->get('sort', json_encode(['order' => 'asc', 'column' => 'created_at'], JSON_THROW_ON_ERROR)), true, 512, JSON_THROW_ON_ERROR);
-        if ($user->role_id !== 1) {
-            $items = Ticket::with(['service', 'status', 'priority', 'department', 'user', 'agent', 'closedBy']) // Include the necessary relationships
+
+        $sort = json_decode($request->get('sort', json_encode([
+            'order' => 'asc', 
+            'column' => 'created_at'
+        ], JSON_THROW_ON_ERROR)), true, 512, JSON_THROW_ON_ERROR);
+
+        if ($user->role_id !== 1) { // If not admin, restrict access
+            $items = Ticket::with(['service', 'status', 'priority', 'department', 'user', 'agent', 'closedBy'])
                 ->filter($request->all())
                 ->where(function (Builder $query) use ($user) {
-                    $query->where('agent_id', $user->id);
-                    $query->orWhere('closed_by', $user->id);
-                    $query->orWhereIn('department_id', $user->departments()->pluck('id')->toArray());
-                    $query->orWhere(function (Builder $query) use ($user) {
-                        $departments = array_unique(array_merge($user->departments()->pluck('id')->toArray(), Department::where('all_agents', 1)->pluck('id')->toArray()));
-                        $query->whereNull('agent_id');
-                        $query->whereIn('department_id', $departments);
-                    });
+                    $query->where('agent_id', $user->id)
+                        ->orWhere('closed_by', $user->id)
+                        ->orWhereIn('department_id', $user->departments()->pluck('id')->toArray()) // Ensure department restriction
+                        ->orWhere(function (Builder $query) use ($user) {
+                            $departments = array_unique(array_merge(
+                                $user->departments()->pluck('id')->toArray(), 
+                                Department::where('all_agents', 1)->pluck('id')->toArray()
+                            ));
+                            $query->whereNull('agent_id')->whereIn('department_id', $departments);
+                        });
                 })
                 ->orderBy($sort['column'], $sort['order'])
                 ->paginate((int) $request->get('perPage', 10));
-        } else {
-            $items = Ticket::with(['service', 'status', 'priority', 'department', 'user', 'agent', 'closedBy']) // Include the necessary relationships
+        } else { 
+            // Admins can see all tickets
+            $items = Ticket::with(['service', 'status', 'priority', 'department', 'user', 'agent', 'closedBy'])
                 ->filter($request->all())
                 ->orderBy($sort['column'], $sort['order'])
                 ->paginate((int) $request->get('perPage', 10));
         }
+
         return response()->json([
             'items' => TicketListResource::collection($items->items()),
             'pagination' => [
