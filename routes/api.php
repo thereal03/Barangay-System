@@ -51,8 +51,6 @@ use Illuminate\Support\Facades\Storage;
     Route::delete('dashboard/admin/blotter/{id}', [BlotterController::class, 'destroy'])
         ->name('blotter.destroy');
         
-    Route::get('/dashboard/admin/departments/ticket-counts', [DepartmentController::class, 'ticketCounts']);
-
     Route::get('services', [ServiceController::class, 'index']);
     // Move the 'services' routes inside the 'dashboard/admin' prefix
     Route::group(['prefix' => 'dashboard/admin'], static function () {
@@ -115,6 +113,7 @@ Route::get('tickets/departments', [UserTicketController::class, 'departments'])-
 Route::post('tickets/attachments', [FileFileController::class, 'uploadAttachment'])->name('tickets.upload-attachment');
 Route::post('tickets/{ticket}/reply', [UserTicketController::class, 'reply'])->name('tickets.reply');
 Route::apiResource('tickets', UserTicketController::class)->except(['update', 'destroy']);
+
 
 Route::group(['prefix' => 'dashboard'], static function () {
 

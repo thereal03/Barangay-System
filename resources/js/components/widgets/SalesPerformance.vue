@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white p-6 rounded-lg shadow-md">
+    <div v-if="canView" class="bg-white p-6 rounded-lg shadow-md">
         <h2 class="text-lg font-semibold text-gray-900">Tickets per Department</h2>
         <canvas ref="departmentChart"></canvas>
         <div v-if="highestDepartment" class="mt-4 text-sm text-gray-600">
@@ -9,55 +9,74 @@
 </template>
 
 <script>
-import Chart from 'chart.js'; // Import Chart.js
+import Chart from 'chart.js';
 import axios from 'axios';
-
 
 export default {
     name: "SalesPerformance",
     data() {
         return {
+            userRole: null,
+            canView: false, // Controls component visibility
             departmentData: {
-                labels: [], // Department names
+                labels: [],
                 datasets: [{
                     label: 'Number of Tickets',
-                    data: [], // Ticket counts
+                    data: [],
                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
                     borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1,
                 }]
             },
-            highestDepartment: null, // Department with the highest tickets
+            highestDepartment: null,
         };
     },
-    mounted() {
-        this.fetchDepartmentData();
+    async mounted() {
+        await this.getUserRole();
+        if (this.canView) {
+            this.fetchDepartmentData();
+        }
     },
     methods: {
+        async getUserRole() {
+            try {
+                const response = await axios.get('/api/auth/user');
+                this.userRole = response.data.role;
+                console.log("Fetched User Role:", this.userRole);
+
+                if (this.userRole && this.userRole.name) {
+                    this.canView = ["admin", "Admin"].includes(this.userRole.name);
+                }
+
+                console.log("Can View SalesPerformance:", this.canView);
+            } catch (error) {
+                console.error("Failed to fetch user role:", error);
+            }
+        },
         async fetchDepartmentData() {
-    try {
-        const departmentResponse = await axios.get('/api/dashboard/admin/departments');
-        const departments = departmentResponse.data;
+            try {
+                const departmentResponse = await axios.get('/api/dashboard/admin/departments');
+                const departments = departmentResponse.data;
 
-        const ticketResponse = await axios.get('/api/dashboard/admin/departments/ticket-counts');
-        const ticketCounts = ticketResponse.data;
+                const ticketResponse = await axios.get('/api/dashboard/admin/departments/ticket-counts');
+                const ticketCounts = ticketResponse.data;
 
-        this.departmentData.labels = departments.map(dept => dept.name);
-        this.departmentData.datasets[0].data = departments.map(dept => {
-            const ticketData = ticketCounts.find(ticket => ticket.department_id === dept.id);
-            return ticketData ? ticketData.count : 0;
-        });
+                this.departmentData.labels = departments.map(dept => dept.name);
+                this.departmentData.datasets[0].data = departments.map(dept => {
+                    const ticketData = ticketCounts.find(ticket => ticket.department_id === dept.id);
+                    return ticketData ? ticketData.count : 0;
+                });
 
-        this.highestDepartment = departments.reduce((max, dept, index) => {
-            const tickets = this.departmentData.datasets[0].data[index];
-            return tickets > max.tickets ? { name: dept.name, tickets } : max;
-        }, { name: '', tickets: 0 });
+                this.highestDepartment = departments.reduce((max, dept, index) => {
+                    const tickets = this.departmentData.datasets[0].data[index];
+                    return tickets > max.tickets ? { name: dept.name, tickets } : max;
+                }, { name: '', tickets: 0 });
 
-        this.renderChart();
-    } catch (error) {
-        console.error("Failed to fetch department data:", error);
-    }
-},
+                this.renderChart();
+            } catch (error) {
+                console.error("Failed to fetch department data:", error);
+            }
+        },
         renderChart() {
             const ctx = this.$refs.departmentChart?.getContext('2d');
             if (!ctx) {
