@@ -127,4 +127,9 @@ class UserController extends Controller
     {
         return response()->json(UserRoleResource::collection(UserRole::all()));
     }
+    public function getUserCount()
+    {
+        $userCount = User::count();
+        return response()->json(['count' => $userCount]);
+    }
 }
