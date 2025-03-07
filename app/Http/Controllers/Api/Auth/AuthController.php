@@ -47,6 +47,15 @@ class AuthController extends Controller
             if ((int) $user->status !== 1) {
                 return response()->json(['message' => __('The user is deactivated, contact the administrator')], 406);
             }
+
+            // Check if the default password has expired
+            if (!is_null($user->password_expires_at) && Carbon::now()->greaterThan($user->password_expires_at)) {
+                return response()->json([
+                    'message' => __('Your default password has expired. Please change your password.'),
+                    'password_expired' => true
+                ], 403);
+            }
+
             $token = $user->createToken(Str::slug(config('app.name').'_auth_token', '_'))->plainTextToken;
             return response()->json(['token' => $token, 'user' => new UserResource($user)]);
         }
@@ -80,6 +89,15 @@ class AuthController extends Controller
         $user->email = $request->get('email');
         $user->password = bcrypt($request->get('password'));
         $user->role_id = Setting::getDecoded('app_default_role');
+
+        // Check if the password is a default password
+        $defaultPasswords = ['Barangay123', 'Default2024', 'TempPass2025']; // Add more if needed
+        if (in_array($request->get('password'), $defaultPasswords)) {
+            $user->password_expires_at = Carbon::now()->addDays(7); // Expires in 7 days
+        } else {
+            $user->password_expires_at = null; // No expiration
+        }
+
         $user->save();
 
         $objNotificationData = new stdClass();
@@ -121,6 +139,7 @@ class AuthController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
+
     public function reset(ResetRequest $request): JsonResponse
     {
         $request->validated();
@@ -131,16 +150,23 @@ class AuthController extends Controller
             if (!$user) {
                 return response()->json(['message' => __('The email entered is not registered')], 406);
             }
+
             $user->password = bcrypt($request->get('password'));
+
+            // If the password is being reset, remove the expiration date
+            $user->password_expires_at = null; // ✅ Password no longer has a lifespan after reset
+
             if (is_null($user->email_verified_at)) {
                 $user->email_verified_at = Carbon::now();
             }
             $user->save();
 
             DB::table('password_resets')->where('email', $user->email)->delete();
+
             /** @var User $user */
             $user = Auth::loginUsingId($user->id);
             $token = $user->createToken(Str::slug(config('app.name').'_auth_token', '_'))->plainTextToken;
+
             return response()->json(['token' => $token, 'user' => new UserResource($user)]);
         }
 

@@ -131,17 +131,29 @@ export default {
             ticket: {
                 subject: null,
                 department_id: null,
-                service_id: null, // Added for service
+                service_id: null, 
                 body: '',
                 attachments: [],
             },
             departmentList: [],
-            serviceList: [], // New property for services
+            serviceList: [],
+            requiredDocumentsMap: { // Mapping service IDs to required documents
+                3: "Required Documents: Valid ID, Barangay Clearance, Proof of Residence",
+                4: "Required Documents: Birth Certificate, Parent's ID, Medical Certificate",
+                5: "Required Documents: Police Report, Insurance Details, Witness Statement",
+                // Add more services and their required documents here
+            }
         }
     },
     mounted() {
         this.getDepartments();
-        this.getServices(); // Fetch services
+        this.getServices();
+    },
+    watch: {
+        // Watch for service selection changes and update ticket body
+        'ticket.service_id': function (newServiceId) {
+            this.updateTicketBody(newServiceId);
+        }
     },
     methods: {
         getDepartments() {
@@ -158,7 +170,7 @@ export default {
             const self = this;
             self.loading.form = true;
             axios.get('api/services').then(function (response) {
-                self.serviceList = response.data; // Make sure this is the correct data path
+                self.serviceList = response.data;
                 self.loading.form = false;
             }).catch(function () {
                 self.loading.form = false;
@@ -184,7 +196,7 @@ export default {
             } else {
                 this.$notify({
                     title: this.$i18n.t('Error').toString(),
-                    text: this.$i18n.t('A file is being uploaded').toString(),
+                    text: self.$i18n.t('A file is being uploaded').toString(),
                     type: 'warning'
                 });
             }
@@ -194,16 +206,7 @@ export default {
             const formData = new FormData();
             self.loading.file = true;
             formData.append('file', e.target.files[0]);
-            axios.post(
-                'api/tickets/attachments',
-                formData,
-                {
-                    headers: {'Content-Type': 'multipart/form-data'},
-                    onUploadProgress: function (progressEvent) {
-                        self.uploadingFileProgress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                    }.bind(this)
-                }
-            ).then(function (response) {
+            axios.post('api/tickets/attachments', formData).then(function (response) {
                 self.loading.file = false;
                 self.uploadingFileProgress = 0;
                 self.$refs.fileInput.value = null;
@@ -216,6 +219,10 @@ export default {
         },
         removeAttachment(attachment) {
             this.ticket.attachments.splice(attachment, 1);
+        },
+        updateTicketBody(serviceId) {
+            // Get required documents from the mapping
+            this.ticket.body = this.requiredDocumentsMap[serviceId] || '';
         }
     }
 }

@@ -161,4 +161,9 @@ class ServiceController extends Controller
         ]);
     }
 
+    public function getServices()
+    {
+        return response()->json(Service::all()); // Ensure required_documents is returned
+    }
+
 }
