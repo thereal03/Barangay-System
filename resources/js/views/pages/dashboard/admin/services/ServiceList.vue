@@ -57,7 +57,7 @@
               </div>
 
               <!-- DOCX Actions -->
-              <div class="mt-4">
+              <!-- <div class="mt-4">
                 <div class="flex flex-wrap gap-3">
                   <button
                     @click="triggerFileUpload(service.id)"
@@ -93,7 +93,7 @@
                     {{ $t('Download DOCX') }}
                   </a>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </template>
