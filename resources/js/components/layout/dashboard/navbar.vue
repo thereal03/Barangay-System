@@ -34,7 +34,7 @@
                         >
                             <div v-show="dropdownOpen" class="origin-top-right z-10 absolute right-0 mt-2 w-56 rounded-md shadow-lg">
                                 <div aria-labelledby="user-menu" aria-orientation="vertical" class="py-1 rounded-md bg-white shadow-xs" role="menu">
-                                    <div class="flex items-center px-4 ce py-2 border-b border-gray-100">
+                                    <div class="flex items-center px-4 py-2 border-b border-gray-100">
                                         <img
                                             :src="$store.state.user.avatar === 'gravatar' ? $store.state.user.gravatar : $store.state.user.avatar"
                                             alt="User avatar"
@@ -69,6 +69,15 @@
                                         @click.native="dropdownOpen = false"
                                     >
                                         {{ $t('Account settings') }}
+                                    </router-link>
+                                    <router-link
+                                        v-if="$store.state.permissions && $store.state.permissions['App.Http.Controllers.Api.Dashboard.Admin.AnnouncementController']"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+                                        role="menuitem"
+                                        to="/dashboard/admin/announcements"
+                                        @click.native="dropdownOpen = false"
+                                    >
+                                        {{ $t('Add Announcement') }}
                                     </router-link>
                                     <a
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"

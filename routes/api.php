@@ -23,66 +23,68 @@ use App\Http\Controllers\Api\Dashboard\Admin\ResidentController;
 use App\Http\Controllers\Api\Dashboard\Admin\DepartmentController;
 use App\Http\Controllers\Api\Dashboard\Admin\BlotterController;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Api\Dashboard\Admin\AnnouncementController;
 
-    Route::get('/users/count', [DashboardAdminUserController::class, 'getUserCount']);
-    //Route::get('/dashboard/admin/services', [ServiceController::class, 'index']);
-    //Route::post('/dashboard/admin/services/{id}/upload-docx', [ServiceController::class, 'uploadDocx']);
-    //Route::get('/dashboard/admin/services/{id}/view-docx', [ServiceController::class, 'viewDocx']);
-    //Route::post('/dashboard/admin/services/{id}/save-docx', [ServiceController::class, 'saveDocx']);
-    Route::get('/dashboard/admin/departments/ticket-counts', [DepartmentController::class, 'ticketCounts']);
+// Public announcements routes
+Route::apiResource('announcements', AnnouncementController::class);
 
-    // List all blotters
-    Route::get('dashboard/admin/blotter', [BlotterController::class, 'index'])
-        ->name('blotter.index');
-    
-    // Show details of a specific blotter
-    Route::get('dashboard/admin/blotter/{id}', [BlotterController::class, 'show'])
-        ->name('blotter.show');
-    
-    // Create a new blotter
-    Route::post('dashboard/admin/blotter', [BlotterController::class, 'store'])
-        ->name('blotter.store');
-    
-    // Update a specific blotter
-    Route::put('dashboard/admin/blotter/{id}', [BlotterController::class, 'update'])
-        ->name('blotter.update');
-    
-    // Delete a specific blotter
-    Route::delete('dashboard/admin/blotter/{id}', [BlotterController::class, 'destroy'])
-        ->name('blotter.destroy');
-        
+Route::get('/users/count', [DashboardAdminUserController::class, 'getUserCount']);
+//Route::get('/dashboard/admin/services', [ServiceController::class, 'index']);
+//Route::post('/dashboard/admin/services/{id}/upload-docx', [ServiceController::class, 'uploadDocx']);
+//Route::get('/dashboard/admin/services/{id}/view-docx', [ServiceController::class, 'viewDocx']);
+//Route::post('/dashboard/admin/services/{id}/save-docx', [ServiceController::class, 'saveDocx']);
+Route::get('/dashboard/admin/departments/ticket-counts', [DepartmentController::class, 'ticketCounts']);
+
+// List all blotters
+Route::get('dashboard/admin/blotter', [BlotterController::class, 'index'])
+    ->name('blotter.index');
+
+// Show details of a specific blotter
+Route::get('dashboard/admin/blotter/{id}', [BlotterController::class, 'show'])
+    ->name('blotter.show');
+
+// Create a new blotter
+Route::post('dashboard/admin/blotter', [BlotterController::class, 'store'])
+    ->name('blotter.store');
+
+// Update a specific blotter
+Route::put('dashboard/admin/blotter/{id}', [BlotterController::class, 'update'])
+    ->name('blotter.update');
+
+// Delete a specific blotter
+Route::delete('dashboard/admin/blotter/{id}', [BlotterController::class, 'destroy'])
+    ->name('blotter.destroy');
+
+Route::get('services', [ServiceController::class, 'index']);
+// Move the 'services' routes inside the 'dashboard/admin' prefix
+Route::group(['prefix' => 'dashboard/admin'], static function () {
+    Route::get('/services', [ServiceController::class, 'publicIndex']); // Public endpoint
     Route::get('services', [ServiceController::class, 'index']);
-    // Move the 'services' routes inside the 'dashboard/admin' prefix
-    Route::group(['prefix' => 'dashboard/admin'], static function () {
-        Route::get('/services', [ServiceController::class, 'publicIndex']); // Public endpoint
-        Route::get('services', [ServiceController::class, 'index']);
-        Route::get('services/{service}', [ServiceController::class, 'show']);
-        Route::post('services', [ServiceController::class, 'store']);
-        Route::put('services/{service}', [ServiceController::class, 'update']);
-        Route::delete('services/{service}', [ServiceController::class, 'destroy']);
-    });
+    Route::get('services/{service}', [ServiceController::class, 'show']);
+    Route::post('services', [ServiceController::class, 'store']);
+    Route::put('services/{service}', [ServiceController::class, 'update']);
+    Route::delete('services/{service}', [ServiceController::class, 'destroy']);
+});
 
+// List all residents
+Route::get('dashboard/admin/resident', [ResidentController::class, 'index'])
+    ->name('resident.index');
 
-        // List all residents
-        Route::get('dashboard/admin/resident', [ResidentController::class, 'index'])
-            ->name('resident.index');
-        
-        // Show details of a specific resident
-        Route::get('dashboard/admin/resident/{id}', [ResidentController::class, 'show'])
-            ->name('resident.show');
-        
-        // Create a new resident
-        Route::post('dashboard/admin/resident', [ResidentController::class, 'store'])
-            ->name('resident.store');
-        
-        // Update a specific resident
-        Route::put('dashboard/admin/resident/{id}', [ResidentController::class, 'update'])
-            ->name('resident.update');
-        
-        // Delete a specific resident
-        Route::delete('dashboard/admin/resident/{id}', [ResidentController::class, 'destroy'])
-            ->name('resident.destroy');
-    
+// Show details of a specific resident
+Route::get('dashboard/admin/resident/{id}', [ResidentController::class, 'show'])
+    ->name('resident.show');
+
+// Create a new resident
+Route::post('dashboard/admin/resident', [ResidentController::class, 'store'])
+    ->name('resident.store');
+
+// Update a specific resident
+Route::put('dashboard/admin/resident/{id}', [ResidentController::class, 'update'])
+    ->name('resident.update');
+
+// Delete a specific resident
+Route::delete('dashboard/admin/resident/{id}', [ResidentController::class, 'destroy'])
+    ->name('resident.destroy');
 
 Route::group(['prefix' => 'lang'], static function () {
     Route::get('/', [LanguageLanguageController::class, 'list'])->name('language.list');
@@ -113,7 +115,6 @@ Route::get('tickets/departments', [UserTicketController::class, 'departments'])-
 Route::post('tickets/attachments', [FileFileController::class, 'uploadAttachment'])->name('tickets.upload-attachment');
 Route::post('tickets/{ticket}/reply', [UserTicketController::class, 'reply'])->name('tickets.reply');
 Route::apiResource('tickets', UserTicketController::class)->except(['update', 'destroy']);
-
 
 Route::group(['prefix' => 'dashboard'], static function () {
 

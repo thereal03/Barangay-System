@@ -147,27 +147,27 @@
             </div>
           </nav>
 
-          <!-- Latest News Section -->
+          <!-- Barangay Announcement Section -->
           <div class="mt-10 bg-gray-50 p-6 rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">{{ $t('Latest News') }}</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">{{ $t('Barangay Announcement') }}</h2>
             <ul>
               <li
-                v-for="article in articles"
-                :key="article.link"
+                v-for="announcement in announcements"
+                :key="announcement.id"
                 class="mb-6 border-b border-gray-200 pb-4 last:border-none"
               >
                 <a
-                  :href="article.link"
+                  :href="announcement.link"
                   target="_blank"
                   class="text-lg font-semibold text-blue-600 hover:underline"
                 >
-                  {{ article.title }}
+                  {{ announcement.title }}
                 </a>
                 <p class="mt-2 text-gray-700">
-                  {{ article.description }}
+                  {{ announcement.description }}
                 </p>
                 <small class="block mt-1 text-sm text-gray-500">
-                  {{ article.pubDate }}
+                  {{ formatDate(announcement.date) }}
                 </small>
               </li>
             </ul>
@@ -192,7 +192,7 @@ export default {
   mounted() {
     this.getStatuses();
     this.getTickets();
-    this.fetchRSS();
+    this.loadAnnouncements();
   },
   data() {
     return {
@@ -215,7 +215,7 @@ export default {
         total: 0,
         totalPages: 0
       },
-      articles: [],
+      announcements: [],
     };
   },
   computed: {
@@ -235,16 +235,14 @@ export default {
         hour12: true
       }); // Example format: "January 25, 2025, 11:55:18 AM"
     },
-    fetchRSS() {
-      axios.get('https://ebarangeles.com/api/rss')
-        .then(response => {
-          this.articles = response.data;
-          this.loading = false;
-        })
-        .catch(error => {
-          console.error('Error fetching RSS feed:', error);
-          this.loading = false;
-        });
+    loadAnnouncements() {
+      // Fetch announcements from the API
+      axios.get('api/announcements').then(response => {
+        this.announcements = response.data;
+        this.loading = false;
+      }).catch(() => {
+        this.loading = false;
+      });
     },
     getStatuses() {
       axios.get('api/tickets/statuses').then(response => {

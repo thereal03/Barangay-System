@@ -3,6 +3,7 @@ import '@/plugins/moment';
 import '@/plugins/ladda';
 import '@/plugins/axios';
 import "@/components";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import Vue from "vue";
 import Vuex from 'vuex';

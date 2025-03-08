@@ -78,6 +78,10 @@ import CreateBlotter from "@/views/pages/dashboard/admin/blotter/create";
 import ListBlotter from "@/views/pages/dashboard/admin/blotter/list";
 import EditBlotter from "@/views/pages/dashboard/admin/blotter/edit";
 
+// Import the AddAnnouncement and AnnouncementList components
+import AddAnnouncement from "@/views/pages/dashboard/admin/announcements/AddAnnouncement";
+import AnnouncementList from "@/views/pages/dashboard/admin/announcements/AnnouncementList";
+
 Vue.use(VueRouter);
 
 let routes = [
@@ -170,7 +174,10 @@ let routes = [
                 path: 'admin/services/new', component: CreateService, 
                 meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.ServiceController'}
             },
-            
+
+            // Add the Add Announcement and Announcement List routes
+            {path: 'admin/announcements', component: AnnouncementList, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.AnnouncementController'}},
+            {path: 'admin/announcements/new', component: AddAnnouncement, meta: {middleware: 'auth', dashboard_access: true, controller: 'App.Http.Controllers.Api.Dashboard.Admin.AnnouncementController'}},
 
             {path: '*', component: DashboardNotFoundPage, meta: {middleware: 'auth', dashboard_access: true}},
         ]
