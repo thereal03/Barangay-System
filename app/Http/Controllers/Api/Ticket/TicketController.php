@@ -158,4 +158,12 @@ class TicketController extends Controller
     {
         return response()->json(StatusResource::collection(Status::all()));
     }
+        public function destroy(Ticket $ticket): JsonResponse
+    {
+        if ($ticket->user_id !== Auth::id()) {
+            return response()->json(['message' => __('Not found')], 404);
+        }
+        $ticket->delete();
+        return response()->json(['message' => __('Ticket deleted successfully')]);
+    }
 }

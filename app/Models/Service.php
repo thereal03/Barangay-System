@@ -9,5 +9,7 @@ class Service extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'required_documents'];
+    protected $fillable = ['name', 'description', 'expiration_days'];
+
+    // No need to set expires_at in the Service model
 }

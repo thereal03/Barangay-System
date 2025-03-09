@@ -36,6 +36,7 @@
                     {{ service.name }}
                   </router-link>
                   <p class="text-sm text-gray-600 mt-1">{{ service.description }}</p>
+                  <p class="text-sm text-gray-600 mt-1">{{ $t('Validity Period') }}: {{ service.expiration_days }} {{ $t('days') }}</p>
                 </div>
                 
                 <!-- Delete Button -->
@@ -230,7 +231,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 /* Add some transition effects for smooth animations */

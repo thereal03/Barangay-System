@@ -25,6 +25,36 @@ use App\Http\Controllers\Api\Dashboard\Admin\BlotterController;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Api\Dashboard\Admin\AnnouncementController;
 
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::delete('tickets/{ticket}', [UserTicketController::class, 'destroy']); // Ensure this line is present
+});
+
+// List all blotters
+Route::get('dashboard/admin/blotter', [BlotterController::class, 'index'])
+    ->name('blotter.index');
+
+// Show details of a specific blotter
+Route::get('dashboard/admin/blotter/{id}', [BlotterController::class, 'show'])
+    ->name('blotter.show');
+
+// Create a new blotter
+Route::post('dashboard/admin/blotter', [BlotterController::class, 'store'])
+    ->name('blotter.store');
+
+// Update a specific blotter
+Route::put('dashboard/admin/blotter/{id}', [BlotterController::class, 'update'])
+    ->name('blotter.update');
+
+// Delete a specific blotter
+Route::delete('dashboard/admin/blotter/{id}', [BlotterController::class, 'destroy'])
+    ->name('blotter.destroy');
+
+// List all services (public endpoint)
+Route::get('services', [ServiceController::class, 'index']);
+
+
+
 // Public announcements routes
 Route::apiResource('announcements', AnnouncementController::class);
 

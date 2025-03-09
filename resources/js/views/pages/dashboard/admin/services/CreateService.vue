@@ -43,6 +43,20 @@
           <p v-if="errors.description" class="text-red-500 text-xs mt-1">{{ errors.description }}</p>
         </div>
 
+        <!-- Expiration Days -->
+        <div>
+          <label for="expiration_days" class="block text-sm font-medium text-gray-700">{{ $t('Validity Period (Days)') }}</label>
+          <input
+            type="number"
+            id="expiration_days"
+            v-model="service.expiration_days"
+            required
+            class="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+            :class="{ 'border-red-500': errors.expiration_days }"
+          />
+          <p v-if="errors.expiration_days" class="text-red-500 text-xs mt-1">{{ errors.expiration_days }}</p>
+        </div>
+
         <!-- Buttons -->
         <div class="flex justify-end space-x-4 mt-4">
           <!-- Cancel Button -->
@@ -78,6 +92,7 @@ export default {
       service: {
         name: '',
         description: '',
+        expiration_days: 30, // Default value
       },
       loading: false,
       message: '',

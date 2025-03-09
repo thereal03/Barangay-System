@@ -43,6 +43,35 @@
                                     </div>
                                 </div>
 
+                                <!-- Service Description -->
+                                <div class="col-span-3">
+                                    <label class="block text-sm font-medium leading-5 text-gray-700" for="description">{{ $t('Description') }}</label>
+                                    <div class="mt-1 relative rounded-md shadow-sm">
+                                        <textarea
+                                            id="description"
+                                            v-model="service.description"
+                                            :placeholder="$t('Description')"
+                                            class="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                                            required
+                                        ></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Expiration Days -->
+                                <div class="col-span-3">
+                                    <label class="block text-sm font-medium leading-5 text-gray-700" for="expiration_days">{{ $t('Validity Period (Days)') }}</label>
+                                    <div class="mt-1 relative rounded-md shadow-sm">
+                                        <input
+                                            id="expiration_days"
+                                            type="number"
+                                            v-model="service.expiration_days"
+                                            :placeholder="$t('Validity Period (Days)')"
+                                            class="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                                            required
+                                        >
+                                    </div>
+                                </div>
+
                                 <!-- Visibility Toggle -->
                                 <div class="col-span-3">
                                     <label class="block text-sm font-medium leading-5 text-gray-700" for="public">{{ $t('Visibility') }}</label>
@@ -165,6 +194,8 @@ export default {
             deleteServiceModal: false,
             service: {
                 name: '',
+                description: '',
+                expiration_days: 30, // Default value
                 public: true,
             },
         };
@@ -176,7 +207,7 @@ export default {
         saveService() {
             this.loading = true;
             axios
-                .put(`api/dashboard/admin/services/${this.$route.params.id}`, this.service)
+                .put(`/api/dashboard/admin/services/${this.$route.params.id}`, this.service)
                 .then((response) => {
                     this.loading = false;
                     // Notify the user of successful update
@@ -201,7 +232,7 @@ export default {
         getService() {
             this.loading = true;
             axios
-                .get(`api/dashboard/admin/services/${this.$route.params.id}`)
+                .get(`/api/dashboard/admin/services/${this.$route.params.id}`)
                 .then((response) => {
                     this.service = response.data;
                     this.loading = false;
@@ -212,7 +243,7 @@ export default {
         },
         deleteService() {
             axios
-                .delete(`api/dashboard/admin/services/${this.$route.params.id}`)
+                .delete(`/api/dashboard/admin/services/${this.$route.params.id}`)
                 .then(() => {
                     this.$notify({
                         title: this.$i18n.t("Success"),

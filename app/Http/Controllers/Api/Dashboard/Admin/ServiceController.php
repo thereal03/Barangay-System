@@ -32,11 +32,13 @@ class ServiceController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'expiration_days' => 'required|integer',
         ]);
 
         $service = Service::create([
             'name' => $request->name,
             'description' => $request->description,
+            'expiration_days' => $request->expiration_days,
         ]);
 
         return response()->json($service, 201);
@@ -48,12 +50,14 @@ class ServiceController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'expiration_days' => 'required|integer',
         ]);
 
         $service = Service::findOrFail($id);
         $service->update([
             'name' => $request->name,
             'description' => $request->description,
+            'expiration_days' => $request->expiration_days,
         ]);
 
         return response()->json($service);
@@ -69,9 +73,9 @@ class ServiceController extends Controller
     }
 
     public function publicIndex()
-{
-    return response()->json(Service::all()); // Return all services
-}
+    {
+        return response()->json(Service::all()); // Return all services
+    }
 
     public function uploadDocx(Request $request, $id)
     {
@@ -131,7 +135,6 @@ class ServiceController extends Controller
     
         return response()->json(['html' => $htmlContent]);
     }
-    
 
     public function saveDocx(Request $request, $id)
     {
@@ -165,5 +168,4 @@ class ServiceController extends Controller
     {
         return response()->json(Service::all()); // Ensure required_documents is returned
     }
-
 }

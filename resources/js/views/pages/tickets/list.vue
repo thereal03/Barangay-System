@@ -47,6 +47,9 @@
                       <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
                         {{ $t('Service') }}
                       </th>
+                      <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
+                        {{ $t('Expiration Date') }}
+                      </th>
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-100">
@@ -79,6 +82,11 @@
                       <td class="px-6 py-4 whitespace-no-wrap leading-5">
                         <div class="text-sm text-gray-800">
                           {{ ticket.service ? ticket.service.name : '' }}
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
+                        <div class="text-sm text-gray-800">
+                          {{ formatDate(calculateExpiryDate(ticket.created_at, ticket.service.expiration_days)) }}
                         </div>
                       </td>
                     </tr>
@@ -235,6 +243,10 @@ export default {
         hour12: true
       }); // Example format: "January 25, 2025, 11:55:18 AM"
     },
+    calculateExpiryDate(createdAt, expirationDays) {
+      const createdDate = new Date(createdAt);
+      return new Date(createdDate.getTime() + expirationDays * 24 * 60 * 60 * 1000); // expiration_days for other services
+    },
     loadAnnouncements() {
       // Fetch announcements from the API
       axios.get('api/announcements').then(response => {
@@ -267,6 +279,7 @@ export default {
           this.getTickets();
         } else {
           this.loading = false;
+          this.checkExpiredTickets(); // Check for expired tickets after loading
         }
       }).catch(() => {
         this.loading = false;
@@ -284,6 +297,25 @@ export default {
     },
     goToTicket(uuid) {
       this.$router.push(`/tickets/${uuid}`);
+    },
+    checkExpiredTickets() {
+      const now = new Date();
+      this.ticketList.forEach(ticket => {
+        const expiryDate = this.calculateExpiryDate(ticket.created_at, ticket.service.expiration_days);
+        console.log(`Checking ticket ${ticket.uuid}: expiryDate = ${expiryDate}, now = ${now}`);
+        if (expiryDate < now) {
+          console.log(`Deleting expired ticket ${ticket.uuid}`);
+          this.deleteTicket(ticket.uuid);
+        }
+      });
+    },
+    deleteTicket(uuid) {
+      axios.delete(`api/tickets/${uuid}`).then(() => {
+        this.ticketList = this.ticketList.filter(ticket => ticket.uuid !== uuid);
+        console.log(`Ticket ${uuid} deleted`);
+      }).catch(error => {
+        console.error('Error deleting ticket:', error);
+      });
     }
   }
 }

@@ -19,6 +19,7 @@ class ServiceResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'docx' => $this->docx ? asset($this->docx) : null,
+            'expiration_days' => $this->expiration_days,
         ];
     }
 
