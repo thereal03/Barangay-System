@@ -18,6 +18,11 @@
             </router-link>
           </div>
         </div>
+        <!-- Password Expiry Timer Section -->
+        <div v-if="isDefaultPassword" class="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+          <p class="font-bold">{{ $t('Password Expiry Notice') }}</p>
+          <p>{{ $t('Your password will expire in') }}: {{ timeLeft }}</p>
+        </div>
       </div>
     </header>
     <main>
@@ -49,6 +54,9 @@
                       </th>
                       <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
                         {{ $t('Expiration Date') }}
+                      </th>
+                      <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
+                        {{ $t('Time Left') }}
                       </th>
                     </tr>
                   </thead>
@@ -87,6 +95,11 @@
                       <td class="px-6 py-4 whitespace-no-wrap leading-5">
                         <div class="text-sm text-gray-800">
                           {{ formatDate(calculateExpiryDate(ticket.created_at, ticket.service.expiration_days)) }}
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
+                        <div class="text-sm text-gray-800">
+                          {{ getTimeLeft(ticket.created_at, ticket.service.expiration_days) }}
                         </div>
                       </td>
                     </tr>
@@ -201,6 +214,8 @@ export default {
     this.getStatuses();
     this.getTickets();
     this.loadAnnouncements();
+    this.checkDefaultPassword(); // Check if the user is using a default password
+    this.startCountdown(); // Start the countdown timer
   },
   data() {
     return {
@@ -224,6 +239,9 @@ export default {
         totalPages: 0
       },
       announcements: [],
+      isDefaultPassword: false, // Add this line
+      passwordExpiresAt: null, // Add this line
+      timeLeft: '' // Add this line
     };
   },
   computed: {
@@ -246,6 +264,73 @@ export default {
     calculateExpiryDate(createdAt, expirationDays) {
       const createdDate = new Date(createdAt);
       return new Date(createdDate.getTime() + expirationDays * 24 * 60 * 60 * 1000); // expiration_days for other services
+    },
+    getTimeLeft(createdAt, expirationDays) {
+      const expiryDate = this.calculateExpiryDate(createdAt, expirationDays);
+      const now = new Date();
+      const timeLeft = expiryDate - now;
+
+      if (timeLeft <= 0) {
+        return this.$t('Expired');
+      }
+
+      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    },
+    startCountdown() {
+      setInterval(() => {
+        this.getTimeLeftForPassword(); // Update the password expiry countdown
+        this.ticketList = [...this.ticketList]; // Trigger reactivity for tickets
+      }, 1000);
+    },
+    getTimeLeftForPassword() {
+      if (!this.passwordExpiresAt) {
+        this.timeLeft = this.$t('No expiration');
+        return;
+      }
+
+      const expiryDate = new Date(this.passwordExpiresAt);
+      const now = new Date();
+      const timeLeft = expiryDate - now;
+
+      if (timeLeft <= 0) {
+        this.timeLeft = this.$t('Expired');
+        return;
+      }
+
+      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+      this.timeLeft = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    },
+    checkDefaultPassword() {
+      axios.get('api/users/me').then(response => {
+        const user = response.data.user;
+
+        // Use the is_default_password flag from the API response
+        this.isDefaultPassword = response.data.is_default_password || true;
+        this.passwordExpiresAt = user.password_expires_at || null;
+
+        // Debugging: Log the response
+        console.log('User data:', user);
+        console.log('Is default password:', this.isDefaultPassword);
+        console.log('Password expires at:', this.passwordExpiresAt);
+
+        // Debugging: Check if the timer section should render
+        if (this.isDefaultPassword) {
+          console.log('Timer section should render.');
+        } else {
+          console.log('Timer section should NOT render.');
+        }
+      }).catch(error => {
+        console.error('Error fetching user data:', error);
+      });
     },
     loadAnnouncements() {
       // Fetch announcements from the API

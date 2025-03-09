@@ -68,6 +68,18 @@
                                         </div>
                                     </div>
 
+                                    <!-- Required Documents Section -->
+                                    <div v-if="requiredDocuments.length > 0" class="col-span-3">
+                                        <label class="block text-sm font-medium leading-5 text-gray-700">{{ $t('Required Documents') }}</label>
+                                        <div class="mt-1 bg-white border border-gray-300 p-4 rounded-md shadow-sm">
+                                            <ul class="list-disc list-inside">
+                                                <li v-for="(doc, index) in requiredDocuments" :key="index" class="py-1">
+                                                    <span class="text-gray-800 font-medium">{{ doc.name }}</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
                                     <div class="col-span-3">
                                         <label class="block text-sm font-medium leading-5 text-gray-700" for="ticket_body">{{ $t('Ticket body') }}</label>
                                         <div class="mt-1 relative rounded-md shadow-sm">
@@ -137,12 +149,7 @@ export default {
             },
             departmentList: [],
             serviceList: [],
-            requiredDocumentsMap: { // Mapping service IDs to required documents
-                3: "Required Documents: Valid ID, Barangay Clearance, Proof of Residence",
-                4: "Required Documents: Birth Certificate, Parent's ID, Medical Certificate",
-                5: "Required Documents: Police Report, Insurance Details, Witness Statement",
-                // Add more services and their required documents here
-            }
+            requiredDocuments: [], // Add this line
         }
     },
     mounted() {
@@ -150,9 +157,9 @@ export default {
         this.getServices();
     },
     watch: {
-        // Watch for service selection changes and update ticket body
+        // Watch for service selection changes and update required documents
         'ticket.service_id': function (newServiceId) {
-            this.updateTicketBody(newServiceId);
+            this.updateRequiredDocuments(newServiceId);
         }
     },
     methods: {
@@ -220,9 +227,13 @@ export default {
         removeAttachment(attachment) {
             this.ticket.attachments.splice(attachment, 1);
         },
-        updateTicketBody(serviceId) {
-            // Get required documents from the mapping
-            this.ticket.body = this.requiredDocumentsMap[serviceId] || '';
+        updateRequiredDocuments(serviceId) {
+            const service = this.serviceList.find(s => s.id === serviceId);
+            if (service && service.documents) {
+                this.requiredDocuments = service.documents;
+            } else {
+                this.requiredDocuments = [];
+            }
         }
     }
 }

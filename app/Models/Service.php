@@ -11,5 +11,10 @@ class Service extends Model
 
     protected $fillable = ['name', 'description', 'expiration_days'];
 
-    // No need to set expires_at in the Service model
+    protected $with = ['documents']; // Automatically load documents with services
+    
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
 }

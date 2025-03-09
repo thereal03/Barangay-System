@@ -13,6 +13,7 @@ use Auth;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -61,26 +62,19 @@ class UserController extends Controller
         $user->status = $request->get('status');
         $user->role_id = $request->get('role_id');
         $user->password = bcrypt($request->get('password'));
+
+        // Check if the password is a default password
+        if ($this->isDefaultPassword($request->get('password'))) {
+            $user->password_expires_at = Carbon::now()->addDays(7); // Expires in 7 days
+            $user->default_password = true; // Set the default_password flag
+        } else {
+            $user->default_password = false; // Ensure the flag is set to false if not a default password
+        }
+
         if ($user->save()) {
             return response()->json(['message' => __('Data saved correctly'), 'user' => new UserResource($user)]);
         }
         return response()->json(['message' => __('An error occurred while saving data')], 500);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  User  $user
-     * @return JsonResponse
-     */
-    public function show(User $user): JsonResponse
-    {
-        /** @var User $authUser */
-        $authUser = Auth::user();
-        if ($user->id === $authUser->id) {
-            return response()->json(['message' => __('Can not edit your user from the user manager, go to your account page')], 406);
-        }
-        return response()->json(new UserResource($user));
     }
 
     /**
@@ -97,6 +91,15 @@ class UserController extends Controller
         $user->email = $request->get('email');
         $user->status = $request->get('status');
         $user->role_id = $request->get('role_id');
+
+        // Check if the password is a default password
+        if ($this->isDefaultPassword($request->get('password'))) {
+            $user->password_expires_at = Carbon::now()->addDays(7); // Expires in 7 days
+            $user->default_password = true; // Set the default_password flag
+        } else {
+            $user->default_password = false; // Ensure the flag is set to false if not a default password
+        }
+
         if ($user->save()) {
             return response()->json(['message' => 'Data updated correctly', 'user' => new UserResource($user)]);
         }
@@ -127,9 +130,38 @@ class UserController extends Controller
     {
         return response()->json(UserRoleResource::collection(UserRole::all()));
     }
+
     public function getUserCount()
     {
         $userCount = User::count();
         return response()->json(['count' => $userCount]);
+    }
+
+    /**
+     * Check if the user's password is a default password.
+     *
+     * @param  string  $password
+     * @return bool
+     */
+    private function isDefaultPassword(string $password): bool
+    {
+        $defaultPasswords = ['Barangay123', 'Default2024', 'TempPass2025'];
+        return in_array($password, $defaultPasswords);
+    }
+
+    /**
+     * Get the authenticated user's data.
+     *
+     * @return JsonResponse
+     */
+    public function me(): JsonResponse
+    {
+        $user = Auth::user();
+
+        return response()->json([
+            'user' => new UserResource($user), // Use UserResource here
+            'is_default_password' => $user->default_password, // Use the default_password flag
+            'password_expires_at' => $user->password_expires_at,
+        ]);
     }
 }

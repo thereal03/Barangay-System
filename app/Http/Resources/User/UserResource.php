@@ -19,6 +19,7 @@ class UserResource extends JsonResource
     {
         /** @var User $user */
         $user = $this;
+
         return [
             'id' => $user->id,
             'name' => $user->name,
@@ -27,6 +28,8 @@ class UserResource extends JsonResource
             'gravatar' => $user->getGravatar(),
             'role' => new UserRoleResource($user->userRole),
             'role_id' => $user->role_id,
+            'password_expires_at' => $user->password_expires_at,
+            'is_default_password' => $user->isDefaultPassword(), // Use the method from the User model
             'status' => (bool) $user->status,
             'created_at' => $user->created_at->toISOString(),
             'updated_at' => $user->updated_at->toISOString()

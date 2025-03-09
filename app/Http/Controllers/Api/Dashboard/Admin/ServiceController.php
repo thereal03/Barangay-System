@@ -15,14 +15,14 @@ class ServiceController extends Controller
     // List all services
     public function index()
     {
-        $services = Service::all();
+        $services = Service::with('documents')->get();
         return response()->json($services);
     }
 
     // Show a specific service
     public function show($id)
     {
-        $service = Service::findOrFail($id);
+        $service = Service::with('documents')->findOrFail($id);
         return response()->json($service);
     }
 
@@ -74,7 +74,7 @@ class ServiceController extends Controller
 
     public function publicIndex()
     {
-        return response()->json(Service::all()); // Return all services
+        return response()->json(Service::with('documents')->get()); // Return all services with documents
     }
 
     public function uploadDocx(Request $request, $id)
@@ -166,6 +166,6 @@ class ServiceController extends Controller
 
     public function getServices()
     {
-        return response()->json(Service::all()); // Ensure required_documents is returned
+        return response()->json(Service::with('documents')->get()); // Ensure required_documents is returned
     }
 }

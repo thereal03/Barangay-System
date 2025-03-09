@@ -45,22 +45,30 @@ class AuthController extends Controller
             /** @var User $user */
             $user = Auth::user();
             if ((int) $user->status !== 1) {
-                return response()->json(['message' => __('The user is deactivated, contact the administrator')], 406);
+                return response()->json(['message' => __('auth.user_deactivated')], 406);
             }
 
             // Check if the default password has expired
             if (!is_null($user->password_expires_at) && Carbon::now()->greaterThan($user->password_expires_at)) {
                 return response()->json([
-                    'message' => __('Your default password has expired. Please change your password.'),
+                    'message' => __('auth.password_expired'),
                     'password_expired' => true
                 ], 403);
             }
 
-            $token = $user->createToken(Str::slug(config('app.name').'_auth_token', '_'))->plainTextToken;
-            return response()->json(['token' => $token, 'user' => new UserResource($user)]);
+            // Check if the password is a default password
+            $isDefaultPassword = $this->isDefaultPassword($request->get('password'));
+
+            $token = $this->createToken($user);
+            return response()->json([
+                'token' => $token,
+                'user' => new UserResource($user),
+                'is_default_password' => $isDefaultPassword,
+                'password_expires_at' => $user->password_expires_at
+            ]);
         }
 
-        return response()->json(['message' => __('These credentials do not match our records, or the user is disabled')], 406);
+        return response()->json(['message' => __('auth.failed')], 406);
     }
 
     /**
@@ -72,7 +80,7 @@ class AuthController extends Controller
         /** @var User $user */
         $user = Auth::user();
         $user->currentAccessToken()->delete();
-        return response()->json(['message' => __('Session closed successfully')]);
+        return response()->json(['message' => __('auth.logout_success')]);
     }
 
     /**
@@ -91,11 +99,9 @@ class AuthController extends Controller
         $user->role_id = Setting::getDecoded('app_default_role');
 
         // Check if the password is a default password
-        $defaultPasswords = ['Barangay123', 'Default2024', 'TempPass2025']; // Add more if needed
+        $defaultPasswords = ['Barangay123', 'Default2024', 'TempPass2025'];
         if (in_array($request->get('password'), $defaultPasswords)) {
             $user->password_expires_at = Carbon::now()->addDays(7); // Expires in 7 days
-        } else {
-            $user->password_expires_at = null; // No expiration
         }
 
         $user->save();
@@ -104,7 +110,7 @@ class AuthController extends Controller
         $objNotificationData->user = $user;
         $user->notify((new UserRegister($objNotificationData))->locale(Setting::getDecoded('app_locale')));
 
-        $token = $user->createToken(Str::slug(config('app.name').'_auth_token', '_'))->plainTextToken;
+        $token = $this->createToken($user);
         return response()->json(['token' => $token, 'user' => new UserResource($user)]);
     }
 
@@ -119,7 +125,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->get('email'))->first();
         if (!$user) {
-            return response()->json(['message' => __('The email entered is not registered')], 406);
+            return response()->json(['message' => __('auth.email_not_found')], 406);
         }
 
         $token = Str::random(60);
@@ -131,7 +137,7 @@ class AuthController extends Controller
         $objNotificationData->user = $user;
         $user->notify((new ResetPassword($objNotificationData)));
 
-        return response()->json(['message' => __('An email has been sent with a link to reset the password')]);
+        return response()->json(['message' => __('auth.password_reset_email_sent')]);
     }
 
     /**
@@ -139,7 +145,6 @@ class AuthController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-
     public function reset(ResetRequest $request): JsonResponse
     {
         $request->validated();
@@ -148,29 +153,23 @@ class AuthController extends Controller
         if ($tokenData) {
             $user = User::where('email', $tokenData->email)->first();
             if (!$user) {
-                return response()->json(['message' => __('The email entered is not registered')], 406);
+                return response()->json(['message' => __('auth.email_not_found')], 406);
             }
 
             $user->password = bcrypt($request->get('password'));
-
-            // If the password is being reset, remove the expiration date
-            $user->password_expires_at = null; // ✅ Password no longer has a lifespan after reset
-
-            if (is_null($user->email_verified_at)) {
-                $user->email_verified_at = Carbon::now();
-            }
+            $user->password_expires_at = null; // Reset expiration date
             $user->save();
 
             DB::table('password_resets')->where('email', $user->email)->delete();
 
             /** @var User $user */
             $user = Auth::loginUsingId($user->id);
-            $token = $user->createToken(Str::slug(config('app.name').'_auth_token', '_'))->plainTextToken;
+            $token = $this->createToken($user);
 
             return response()->json(['token' => $token, 'user' => new UserResource($user)]);
         }
 
-        return response()->json(['message' => __('The recovery token is incorrect or has already been used')], 406);
+        return response()->json(['message' => __('auth.invalid_reset_token')], 406);
     }
 
     /**
@@ -199,5 +198,28 @@ class AuthController extends Controller
             }
         }
         return response()->json(['access' => $access, 'dashboard_access' => $dashboardAccess]);
+    }
+
+    /**
+     * Create a token for the user.
+     *
+     * @param  User  $user
+     * @return string
+     */
+    private function createToken(User $user): string
+    {
+        return $user->createToken(Str::slug(config('app.name').'_auth_token', '_'))->plainTextToken;
+    }
+
+    /**
+     * Check if the user's password is a default password.
+     *
+     * @param  string  $password
+     * @return bool
+     */
+    private function isDefaultPassword(string $password): bool
+    {
+        $defaultPasswords = ['Barangay123', 'Default2024', 'TempPass2025'];
+        return in_array($password, $defaultPasswords);
     }
 }

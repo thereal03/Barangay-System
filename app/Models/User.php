@@ -111,4 +111,10 @@ class User extends Authenticatable
     {
         return 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'?s=80&d=retro';
     }
+
+    public function isDefaultPassword(): bool
+    {
+        $defaultPasswords = ['Barangay123', 'Default2024', 'TempPass2025'];
+        return in_array($this->password, $defaultPasswords);
+    }
 }

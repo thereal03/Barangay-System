@@ -57,6 +57,19 @@
                 </button>
               </div>
 
+              <!-- Document Requirements Section -->
+              <div class="mt-4">
+                <h4 class="text-md font-semibold">{{ $t('Document Requirements') }}</h4>
+                <ul class="list-disc list-inside">
+                  <li v-for="(doc, index) in service.documents" :key="index">
+                    {{ doc.name }}
+                    <button @click="editDocument(service.id, index)" class="text-blue-600 hover:underline">{{ $t('Edit') }}</button>
+                    <button @click="deleteDocument(service.id, index)" class="text-red-600 hover:underline">{{ $t('Delete') }}</button>
+                  </li>
+                </ul>
+                <button @click="addDocument(service.id)" class="mt-2 text-blue-600 hover:underline">{{ $t('Add Document') }}</button>
+              </div>
+
               <!-- DOCX Actions -->
               <!-- <div class="mt-4">
                 <div class="flex flex-wrap gap-3">
@@ -108,6 +121,18 @@
       </div>
     </div>
 
+    <!-- Modal for Editing Document -->
+    <div v-if="showDocumentEditor" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div class="bg-white p-6 rounded-md w-3/4">
+        <h2 class="text-lg font-semibold mb-4">{{ $t('Edit Document') }}</h2>
+        <input v-model="documentName" class="w-full p-2 border rounded-md" placeholder="Document Name" />
+        <div class="mt-4 flex justify-end">
+          <button @click="showDocumentEditor = false" class="mr-2 px-4 py-2 bg-gray-400 text-white rounded-md">Cancel</button>
+          <button @click="saveDocument" class="px-4 py-2 bg-blue-600 text-white rounded-md">Save</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal for Editing DOCX -->
     <div v-if="showDocxEditor" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div class="bg-white p-6 rounded-md w-3/4">
@@ -138,6 +163,9 @@ export default {
       showDocxEditor: false,
       docxContent: "",
       editingServiceId: null,
+      showDocumentEditor: false,
+      documentName: "",
+      editingDocumentIndex: null,
     };
   },
   mounted() {
@@ -224,6 +252,88 @@ export default {
         });
         alert("Document updated successfully!");
         this.showDocxEditor = false;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    addDocument(serviceId) {
+      this.editingServiceId = serviceId;
+      this.editingDocumentIndex = null;
+      this.documentName = "";
+      this.showDocumentEditor = true;
+    },
+
+    editDocument(serviceId, index) {
+      const service = this.services.find(s => s.id === serviceId);
+      if (!service) {
+        console.error(`Service with id ${serviceId} not found.`);
+        return;
+      }
+      if (!service.documents || index >= service.documents.length) {
+        console.error(`Document with index ${index} not found.`);
+        return;
+      }
+      const document = service.documents[index];
+      this.editingServiceId = serviceId;
+      this.editingDocumentIndex = index;
+      this.documentName = document.name;
+      this.showDocumentEditor = true;
+    },
+
+    async saveDocument() {
+      if (!this.documentName) {
+        alert("Document name is required.");
+        return;
+      }
+
+      const service = this.services.find(s => s.id === this.editingServiceId);
+      if (!service) {
+        console.error(`Service with id ${this.editingServiceId} not found.`);
+        return;
+      }
+
+      if (!service.documents) {
+        service.documents = [];
+      }
+
+      try {
+        if (this.editingDocumentIndex !== null) {
+          // Update existing document
+          const document = service.documents[this.editingDocumentIndex];
+          await axios.put(`/api/services/${service.id}/documents/${document.id}`, {
+            name: this.documentName,
+          });
+          document.name = this.documentName;
+        } else {
+          // Add new document
+          const response = await axios.post(`/api/services/${service.id}/documents`, {
+            name: this.documentName,
+          });
+          service.documents.push(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      this.showDocumentEditor = false;
+    },
+
+    async deleteDocument(serviceId, index) {
+      const service = this.services.find(s => s.id === serviceId);
+      if (!service) {
+        console.error(`Service with id ${serviceId} not found.`);
+        return;
+      }
+      if (!service.documents || index >= service.documents.length) {
+        console.error(`Document with index ${index} not found.`);
+        return;
+      }
+      const document = service.documents[index];
+
+      try {
+        await axios.delete(`/api/services/${service.id}/documents/${document.id}`);
+        service.documents.splice(index, 1);
       } catch (error) {
         console.error(error);
       }
