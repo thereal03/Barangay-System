@@ -314,7 +314,7 @@ export default {
         const user = response.data.user;
 
         // Use the is_default_password flag from the API response
-        this.isDefaultPassword = response.data.is_default_password || true;
+        this.isDefaultPassword = response.data.is_default_password;
         this.passwordExpiresAt = user.password_expires_at || null;
 
         // Debugging: Log the response
