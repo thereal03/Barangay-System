@@ -1,64 +1,93 @@
 <template>
-    <div class="grid grid-cols-1 gap-6">
-        <div class="flex flex-col bg-white rounded-lg shadow">
-            <div class="p-4">
-                <div class="font-semibold">
-                    {{ $t('Opened tickets this year') }}
-                </div>
-            </div>
-            <div class="p-4">
-                <loading :status="loading"/>
-                <line-chart ref="chart" :chart-data="chartData" :height="350"></line-chart>
-            </div>
-        </div>
+  <div class="analytics-container">
+    <h2 class="text-2xl font-bold mb-4">{{ $t('Ticket Analytics') }}</h2>
+    <div class="flex justify-between mb-4">
+      <div class="bg-green-100 p-4 rounded shadow">
+        <h3 class="font-semibold">{{ $t('Resolved Tickets') }}</h3>
+        <p class="text-lg">{{ resolvedTickets }}</p>
+      </div>
+      <div class="bg-red-100 p-4 rounded shadow">
+        <h3 class="font-semibold">{{ $t('Open Tickets') }}</h3>
+        <p class="text-lg">{{ openTickets }}</p>
+      </div>
     </div>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-xl font-bold mb-4">{{ $t('Total Tickets') }}: {{ totalTickets }}</h3>
+      <div>
+        <canvas id="ticketChart"></canvas>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import LineChart from "@/components/charts/line-chart";
+import axios from 'axios';
+import { Chart } from 'chart.js';
 
 export default {
-    name: "opened-tickets",
-    components: {LineChart},
-    data() {
-        return {
-            loading: true,
-            chartData: {
-                labels: [
-                    this.$t('Jan'), this.$t('Feb'), this.$t('Mar'), this.$t('Apr'), this.$t('May'), this.$t('Jun'), this.$t('Jul'), this.$t('Aug'), this.$t('Sept'), this.$t('Oct'), this.$t('Nov'), this.$t('Dec')
-                ],
-                datasets: [
-                    {
-                        label: this.$i18n.t('Tickets'),
-                        backgroundColor: '#4299e1',
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    }
-                ],
+  name: "Analytics",
+  data() {
+    return {
+      resolvedTickets: 0,
+      openTickets: 0,
+    };
+  },
+  computed: {
+    totalTickets() {
+      return this.resolvedTickets + this.openTickets;
+    }
+  },
+  mounted() {
+    this.fetchTicketData();
+  },
+  methods: {
+    fetchTicketData() {
+      axios.get('api/dashboard/tickets/stats').then(response => {
+        this.resolvedTickets = response.data.resolved;
+        this.openTickets = response.data.open;
+        console.log("Resolved Tickets:", this.resolvedTickets);
+        console.log("Open Tickets:", this.openTickets);
+        this.renderChart();
+      }).catch(error => {
+        console.error("Error fetching ticket data:", error);
+      });
+    },
+    renderChart() {
+      const ctx = document.getElementById('ticketChart').getContext('2d');
+      console.log("Chart Data:", [this.resolvedTickets, this.openTickets]);
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Resolved', 'Open'],
+          datasets: [{
+            label: 'Tickets',
+            data: [this.resolvedTickets, this.openTickets],
+            backgroundColor: ['#4caf50', '#f44336'],
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            tooltip: {
+              callbacks: {
+                label: function(tooltipItem) {
+                  return tooltipItem.label + ': ' + tooltipItem.raw;
+                }
+              }
             }
+          }
         }
-    },
-    computed: {
-        datasets() {
-            return this.chartData.datasets[0].data
-        }
-    },
-    watch: {
-        datasets() {
-            this.$refs.chart.update();
-        }
-    },
-    mounted() {
-        this.getData();
-    },
-    methods: {
-        getData() {
-            const self = this;
-            self.loading = true;
-            axios.get('api/dashboard/stats/opened-tickets').then(function (response) {
-                self.chartData.datasets[0].data = response.data;
-                self.loading = false;
-            });
-        }
-    },
+      });
+    }
+  }
 }
 </script>
+
+<style scoped>
+.analytics-container {
+  padding: 20px;
+}
+</style>
