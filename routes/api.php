@@ -24,6 +24,9 @@ use App\Http\Controllers\Api\Dashboard\Admin\DepartmentController;
 use App\Http\Controllers\Api\Dashboard\Admin\BlotterController;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Api\Dashboard\Admin\AnnouncementController;
+use App\Http\Controllers\Api\Dashboard\TicketStatsController;
+
+Route::get('dashboard/tickets/stats', [TicketStatsController::class, 'getStats']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
