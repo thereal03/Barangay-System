@@ -43,7 +43,7 @@
       v-if="$store.state.permissions && $store.state.permissions['App.Http.Controllers.Api.Dashboard.Admin.ResidentController']"
       :label="$t('Announcements')"
       :mobile="mobile"
-      icon="font-awesome.home-regular"
+      icon="font-awesome.bullhorn-solid"
       to="/dashboard/admin/announcements"
     ></menu-item>
 
