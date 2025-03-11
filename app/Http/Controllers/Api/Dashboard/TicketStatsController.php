@@ -8,14 +8,26 @@ use Illuminate\Http\Request;
 
 class TicketStatsController extends Controller
 {
-    public function getStats()
+    public function getStats(Request $request)
     {
-        // Assuming the status is stored in a related table called 'ticket_statuses'
-        $resolvedTickets = Ticket::whereHas('status', function ($query) {
+        $serviceId = $request->get('service_id');
+        $departmentsId = $request->get('departments_id');
+
+        $query = Ticket::query();
+
+        if ($serviceId) {
+            $query->where('service_id', $serviceId);
+        }
+
+        if ($departmentsId) {
+            $query->where('departments_id', $departmentsId);
+        }
+
+        $resolvedTickets = $query->whereHas('status', function ($query) {
             $query->where('name', 'resolved');
         })->count();
 
-        $openTickets = Ticket::whereHas('status', function ($query) {
+        $openTickets = $query->whereHas('status', function ($query) {
             $query->where('name', 'open');
         })->count();
 
