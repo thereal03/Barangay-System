@@ -200,6 +200,18 @@
                                                             </div>
                                                             <div class="col-span-3 mb-2">
                                                                 <label class="block text-sm font-medium leading-5 text-gray-700" for="label">
+                                                                    {{ $t('Needed By') }}
+                                                                </label>
+                                                                <input
+                                                                    id="needed_by"
+                                                                    v-model="filters.needed_by"
+                                                                    type="date"
+                                                                    class="form-input block w-full rounded-md text-sm transition ease-in-out duration-150"
+                                                                    @change="getTickets"
+                                                                />
+                                                            </div>
+                                                            <div class="col-span-3 mb-2">
+                                                                <label class="block text-sm font-medium leading-5 text-gray-700" for="label">
                                                                     {{ $t('Sort') }}
                                                                 </label>
                                                                 <div class="relative inline-flex w-full">
@@ -237,6 +249,7 @@
                                                                         <option value="created_at">{{ $t('Created at') }}</option>
                                                                         <option value="updated_at">{{ $t('Updated at') }}</option>
                                                                         <option value="closed_at">{{ $t('Closed at') }}</option>
+                                                                        <option value="needed_by">{{ $t('Needed By') }}</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -455,6 +468,9 @@
                                 <th class="px-3 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
                                     {{ $t('Updated at') }}
                                 </th>
+                                <th class="px-3 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
+                                    {{ $t('Needed By') }}
+                                </th>
                             </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-100">
@@ -534,6 +550,11 @@
                                     <td class="px-3 py-4 whitespace-no-wrap leading-5">
                                         <div class="text-sm text-gray-500">
                                             {{ ticket.updated_at | momentFormatDateTimeAgo }}
+                                        </div>
+                                    </td>
+                                    <td class="px-3 py-4 whitespace-no-wrap leading-5">
+                                        <div class="text-sm text-gray-500">
+                                            {{ ticket.needed_by }}
                                         </div>
                                     </td>
                                 </router-link>
@@ -694,6 +715,7 @@ export default {
                 statuses: [1, 2],
                 priorities: [],
                 services: [],
+                needed_by: '',
             },
             quickActions: {
                 agent: false,
@@ -735,7 +757,8 @@ export default {
                 || this.filters.labels.length !== 0
                 || this.filters.statuses.length !== 0
                 || this.filters.priorities.length !== 0
-                || this.filters.services.length !== 0;
+                || this.filters.services.length !== 0
+                || this.filters.needed_by !== '';
         }
     },
     filters: {
@@ -864,6 +887,7 @@ export default {
                     statuses: self.filters.statuses,
                     priorities: self.filters.priorities,
                     services: self.filters.services,
+                    needed_by: self.filters.needed_by,
                 }
             }).then(function (response) {
                 self.ticketList = response.data.items;

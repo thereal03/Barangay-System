@@ -41,6 +41,7 @@ class TicketListResource extends JsonResource
             'created_at' => $ticket->created_at->toISOString(),
             'updated_at' => $ticket->updated_at->toISOString(),
             'service' => new ServiceResource($ticket->service), // Include the service relationship
+            'needed_by' => $this->needed_by,
         ];
     }
 }

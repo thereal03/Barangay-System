@@ -222,6 +222,7 @@ class TicketController extends Controller
             'statuses' => StatusResource::collection(Status::all()),
             'priorities' => PriorityResource::collection(Priority::orderBy('value')->get()),
             'services' => ServiceSelectResource::collection(Service::all()),
+            'needed_by' => []
         ]);
     }
 

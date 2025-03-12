@@ -80,6 +80,9 @@ class TicketController extends Controller
         if ($request->has('service_id')) {
             $ticket->service_id = $request->get('service_id'); // Ensure this line is present to save service_id
         }
+        if ($request->has('needed_by')) {
+            $ticket->needed_by = $request->get('needed_by'); // Save the needed_by date
+        }
         $ticket->user_id = Auth::id();
         $ticket->saveOrFail();
         $ticketReply = new TicketReply();

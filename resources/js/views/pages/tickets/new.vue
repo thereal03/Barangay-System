@@ -68,6 +68,20 @@
                                         </div>
                                     </div>
 
+                                    <!-- Needed By Date Input -->
+                                    <div class="col-span-3">
+                                        <label class="block text-sm font-medium leading-5 text-gray-700" for="needed_by">{{ $t('Needed By') }}</label>
+                                        <div class="mt-1 relative rounded-md shadow-sm">
+                                            <input
+                                                type="date"
+                                                id="needed_by"
+                                                v-model="ticket.needed_by"
+                                                class="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                                                required
+                                            >
+                                        </div>
+                                    </div>
+
                                     <!-- Required Documents Section -->
                                     <div v-if="requiredDocuments.length > 0" class="col-span-3">
                                         <label class="block text-sm font-medium leading-5 text-gray-700">{{ $t('Required Documents') }}</label>
@@ -144,6 +158,7 @@ export default {
                 subject: null,
                 department_id: null,
                 service_id: null, 
+                needed_by: '', // Add this line
                 body: '',
                 attachments: [],
             },

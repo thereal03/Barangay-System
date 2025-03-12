@@ -62,4 +62,12 @@ class TicketFilter extends ModelFilter
     {
         return $this->whereIn('priority_id', $priorities);
     }
+    public function neededBy($neededBy): TicketFilter
+{
+    return $this->whereDate('needed_by', '=', $neededBy);
+}
+    public function services($services): TicketFilter
+    {
+        return $this->whereIn('service_id', $services);
+    }
 }

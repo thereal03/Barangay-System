@@ -34,77 +34,79 @@
           <template v-if="ticketList.length > 0">
             <div class="-my-2 sm:-mx-6 lg:-mx-8">
               <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead>
-                    <tr>
-                      <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
-                        {{ $t('Subject') }}
-                      </th>
-                      <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
-                        {{ $t('Created at') }}
-                      </th>
-                      <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
-                        {{ $t('Updated at') }}
-                      </th>
-                      <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
-                        {{ $t('Status') }}
-                      </th>
-                      <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
-                        {{ $t('Service') }}
-                      </th>
-                      <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
-                        {{ $t('Expiration Date') }}
-                      </th>
-                      <th class="px-6 py-2 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider whitespace-no-wrap overflow-x-auto">
-                        {{ $t('Time Left') }}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-100">
-                    <tr
-                      v-for="ticket in ticketList"
-                      :key="ticket.uuid"
-                      class="cursor-pointer hover:bg-gray-100"
-                      @click="goToTicket(ticket.uuid)"
-                    >
-                      <td class="px-6 py-4 max-w-0 w-full whitespace-no-wrap">
-                        <div class="w-full truncate text-sm leading-5 text-gray-900">
-                          {{ ticket.subject }}
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
-                        <div class="text-sm text-gray-800">
-                          {{ formatDate(ticket.created_at) }}
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
-                        <div class="text-sm text-gray-800">
-                          {{ formatDate(ticket.updated_at) }}
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
-                        <div class="text-sm text-gray-800">
-                          {{ ticket.status.name }}
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
-                        <div class="text-sm text-gray-800">
-                          {{ ticket.service ? ticket.service.name : '' }}
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
-                        <div class="text-sm text-gray-800">
-                          {{ formatDate(calculateExpiryDate(ticket.created_at, ticket.service.expiration_days)) }}
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-no-wrap leading-5">
-                        <div class="text-sm text-gray-800">
-                          {{ getTimeLeft(ticket.created_at, ticket.service.expiration_days) }}
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                          {{ $t('Subject') }}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                          {{ $t('Created at') }}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                          {{ $t('Updated at') }}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                          {{ $t('Status') }}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                          {{ $t('Service') }}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                          {{ $t('Needed By') }}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                          {{ $t('Time Left') }}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100">
+                      <tr
+                        v-for="ticket in ticketList"
+                        :key="ticket.uuid"
+                        class="cursor-pointer hover:bg-gray-100"
+                        @click="goToTicket(ticket.uuid)"
+                      >
+                        <td class="px-6 py-4 max-w-0 w-full whitespace-no-wrap">
+                          <div class="w-full truncate text-sm leading-5 text-gray-900">
+                            {{ ticket.subject }}
+                          </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-no-wrap leading-5">
+                          <div class="text-sm text-gray-800">
+                            {{ formatDate(ticket.created_at) }}
+                          </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-no-wrap leading-5">
+                          <div class="text-sm text-gray-800">
+                            {{ formatDate(ticket.updated_at) }}
+                          </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-no-wrap leading-5">
+                          <div class="text-sm text-gray-800">
+                            {{ ticket.status.name }}
+                          </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-no-wrap leading-5">
+                          <div class="text-sm text-gray-800">
+                            {{ ticket.service ? ticket.service.name : '' }}
+                          </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-no-wrap leading-5">
+                          <div class="text-sm text-gray-800">
+                            {{ formatDate(ticket.needed_by, { onlyDate: true }) }}
+                          </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-no-wrap leading-5">
+                          <div class="text-sm text-gray-800">
+                            {{ getTimeLeft(ticket.created_at, ticket.service.expiration_days) }}
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </template>
@@ -193,6 +195,31 @@
               </li>
             </ul>
           </div>
+          <!-- Latest News Section -->
+          <div class="mt-10 bg-gray-50 p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">{{ $t('Latest News') }}</h2>
+            <ul>
+              <li
+                v-for="article in articles"
+                :key="article.link"
+                class="mb-6 border-b border-gray-200 pb-4 last:border-none"
+              >
+                <a
+                  :href="article.link"
+                  target="_blank"
+                  class="text-lg font-semibold text-blue-600 hover:underline"
+                >
+                  {{ article.title }}
+                </a>
+                <p class="mt-2 text-gray-700">
+                  {{ article.description }}
+                </p>
+                <small class="block mt-1 text-sm text-gray-500">
+                  {{ article.pubDate }}
+                </small>
+              </li>
+            </ul>
+          </div>
 
         </div>
       </div>
@@ -216,6 +243,7 @@ export default {
     this.loadAnnouncements();
     this.checkDefaultPassword(); // Check if the user is using a default password
     this.startCountdown(); // Start the countdown timer
+    this.fetchRSS();
   },
   data() {
     return {
@@ -239,6 +267,7 @@ export default {
         totalPages: 0
       },
       announcements: [],
+      articles: [], // Add this line
       isDefaultPassword: false, // Add this line
       passwordExpiresAt: null, // Add this line
       timeLeft: '' // Add this line
@@ -250,16 +279,19 @@ export default {
     }
   },
   methods: {
-    formatDate(date) {
-      return new Date(date).toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: true
-      }); // Example format: "January 25, 2025, 11:55:18 AM"
+    formatDate(date, options = { onlyDate: false }) {
+      const formatOptions = options.onlyDate
+        ? { year: 'numeric', month: 'long', day: 'numeric' }
+        : {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true
+          };
+      return new Date(date).toLocaleString('en-US', formatOptions);
     },
     calculateExpiryDate(createdAt, expirationDays) {
       const createdDate = new Date(createdAt);
@@ -341,6 +373,17 @@ export default {
         this.loading = false;
       });
     },
+    fetchRSS() {
+      axios.get('http://127.0.0.1:8000/api/rss')
+        .then(response => {
+          this.articles = response.data;
+          this.loading = false;
+        })
+        .catch(error => {
+          console.error('Error fetching RSS feed:', error);
+          this.loading = false;
+        });
+    },
     getStatuses() {
       axios.get('api/tickets/statuses').then(response => {
         this.statusList = response.data;
@@ -405,3 +448,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+</style>
