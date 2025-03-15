@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DepartmentTableSeeder::class);
         $this->call(ResidentSeeder::class);
         $this->call(ServiceSeeder::class);
+        $this->call(TicketSeeder::class);
     }
 }

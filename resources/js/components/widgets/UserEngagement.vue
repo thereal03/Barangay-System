@@ -62,10 +62,10 @@ export default {
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['November', 'December', 'January', 'February'],
+                    labels: ['November', 'December', 'January', 'February', 'March'],
                     datasets: [{
                         label: 'Active Users',
-                        data: [6, 22, 11, this.userCount], // Include the total user count as the last data point
+                        data: [6, 22, 11, 20,this.userCount], // Include the total user count as the last data point
                         borderColor: 'rgba(75, 192, 192, 1)',
                         fill: false,
                     }]

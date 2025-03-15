@@ -26,16 +26,17 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Api\Dashboard\Admin\AnnouncementController;
 use App\Http\Controllers\Api\Dashboard\TicketStatsController;
 use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\Api\Dashboard\Admin\UserController;
+
 
 // Protected route for fetching authenticated user data
-Route::middleware('auth:sanctum')->get('/users/me', [UserController::class, 'me']);
+Route::middleware('auth:sanctum')->get('/users/me', [DashboardAdminUserController::class, 'me']);
 
 Route::post('/services/{serviceId}/documents', [DocumentController::class, 'store']);
 Route::put('/services/{serviceId}/documents/{documentId}', [DocumentController::class, 'update']);
 Route::delete('/services/{serviceId}/documents/{documentId}', [DocumentController::class, 'destroy']);
 
 Route::get('dashboard/tickets/stats', [TicketStatsController::class, 'getStats']);
+Route::get('dashboard/tickets/priority-stats', [TicketStatsController::class, 'getPriorityStats']);
 
 Route::middleware('auth:sanctum')->group(function () {
 

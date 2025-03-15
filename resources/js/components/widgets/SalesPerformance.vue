@@ -1,122 +1,114 @@
 <template>
-    <div v-if="canView" class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-lg font-semibold text-gray-900">Tickets per Department</h2>
-        <canvas ref="departmentChart"></canvas>
-        <div v-if="highestDepartment" class="mt-4 text-sm text-gray-600">
-            <span class="font-semibold">Highest:</span> {{ highestDepartment.name }} ({{ highestDepartment.tickets }} tickets)
-        </div>
+    <div class="analytics-container">
+      <h2 class="text-2xl font-bold mb-4">{{ $t('Ticket Priority Analysis') }}</h2>
+      <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+        <canvas ref="ticketPriorityChart"></canvas>
+      </div>
     </div>
-</template>
-
-<script>
-import Chart from 'chart.js';
-import axios from 'axios';
-
-export default {
-    name: "SalesPerformance",
+  </template>
+  
+  <script>
+  import axios from 'axios';
+  import { Chart } from 'chart.js';
+  
+  export default {
+    name: "TicketPriorityAnalysis",
     data() {
-        return {
-            userRole: null,
-            canView: false, // Controls component visibility
-            departmentData: {
-                labels: [],
-                datasets: [{
-                    label: 'Number of Tickets',
-                    data: [],
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1,
-                }]
-            },
-            highestDepartment: null,
-        };
+      return {
+        ticketPriorityStats: [],
+      };
     },
-    async mounted() {
-        await this.getUserRole();
-        if (this.canView) {
-            this.fetchDepartmentData();
-        }
+    mounted() {
+      this.fetchTicketPriorityStats();
     },
     methods: {
-        async getUserRole() {
-            try {
-                const response = await axios.get('/api/auth/user');
-                this.userRole = response.data.role;
-                console.log("Fetched User Role:", this.userRole);
-
-                if (this.userRole && this.userRole.name) {
-                    this.canView = ["admin", "Admin"].includes(this.userRole.name);
-                }
-
-                console.log("Can View SalesPerformance:", this.canView);
-            } catch (error) {
-                console.error("Failed to fetch user role:", error);
-            }
-        },
-        async fetchDepartmentData() {
-            try {
-                const departmentResponse = await axios.get('/api/dashboard/admin/departments');
-                const departments = departmentResponse.data;
-
-                const ticketResponse = await axios.get('/api/dashboard/admin/departments/ticket-counts');
-                const ticketCounts = ticketResponse.data;
-
-                this.departmentData.labels = departments.map(dept => dept.name);
-                this.departmentData.datasets[0].data = departments.map(dept => {
-                    const ticketData = ticketCounts.find(ticket => ticket.department_id === dept.id);
-                    return ticketData ? ticketData.count : 0;
-                });
-
-                this.highestDepartment = departments.reduce((max, dept, index) => {
-                    const tickets = this.departmentData.datasets[0].data[index];
-                    return tickets > max.tickets ? { name: dept.name, tickets } : max;
-                }, { name: '', tickets: 0 });
-
-                this.renderChart();
-            } catch (error) {
-                console.error("Failed to fetch department data:", error);
-            }
-        },
-        renderChart() {
-            const ctx = this.$refs.departmentChart?.getContext('2d');
-            if (!ctx) {
-                console.error("Canvas context is not available.");
-                return;
-            }
-
-            new Chart(ctx, {
-                type: 'bar',
-                data: this.departmentData,
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                        },
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Number of Tickets',
-                            },
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Department',
-                            },
-                        },
-                    },
-                },
-            });
+      fetchTicketPriorityStats() {
+        axios.get('api/dashboard/tickets/priority-stats').then(response => {
+          this.ticketPriorityStats = response.data;
+          this.renderTicketPriorityChart();
+        }).catch(error => {
+          console.error("Error fetching ticket priority stats:", error);
+        });
+      },
+      renderTicketPriorityChart() {
+        const ctx = this.$refs.ticketPriorityChart?.getContext('2d');
+        if (!ctx) {
+          console.error("Canvas context is not available.");
+          return;
         }
-    }
-}
-</script>
-
-<style scoped>
-/* Add any custom styles here */
-</style>
+  
+        // Ensure all priority levels are included, even if their count is 0
+        const priorities = ['Low', 'Medium', 'High', 'Urgent', 'Unknown'];
+        const priorityData = priorities.map(priority => {
+          const stat = this.ticketPriorityStats.find(stat => stat.priority === priority);
+          return stat ? stat.count : 0;
+        });
+  
+        console.log("Rendering ticket priority chart with data:", priorityData);
+  
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: priorities,
+            datasets: [{
+              label: 'Tickets',
+              data: priorityData,
+              backgroundColor: priorities.map(priority => {
+                switch (priority) {
+                  case 'Low':
+                    return '#4caf50'; // Green
+                  case 'Medium':
+                    return '#ffeb3b'; // Yellow
+                  case 'High':
+                    return '#ff9800'; // Orange
+                  case 'Urgent':
+                    return '#f44336'; // Red
+                  default:
+                    return '#9e9e9e'; // Grey for Unknown
+                }
+              }),
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(tooltipItem) {
+                    return tooltipItem.label + ': ' + tooltipItem.raw;
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                min: 0, // Ensure the y-axis starts at 0
+                title: {
+                  display: true,
+                  text: 'Number of Tickets',
+                },
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Priority',
+                },
+              },
+            },
+          },
+        });
+      },
+    },
+  };
+  </script>
+  
+  <style scoped>
+  .analytics-container {
+    padding: 20px;
+  }
+  </style>

@@ -11,7 +11,7 @@ class TicketStatsController extends Controller
     public function getStats(Request $request)
     {
         $serviceId = $request->get('service_id');
-        $departmentsId = $request->get('departments_id');
+        $departmentId = $request->get('department_id');
 
         $query = Ticket::query();
 
@@ -19,21 +19,45 @@ class TicketStatsController extends Controller
             $query->where('service_id', $serviceId);
         }
 
-        if ($departmentsId) {
-            $query->where('departments_id', $departmentsId);
+        if ($departmentId) {
+            $query->where('department_id', $departmentId);
         }
 
-        $resolvedTickets = $query->whereHas('status', function ($query) {
-            $query->where('name', 'resolved');
-        })->count();
+        // Fetch resolved tickets grouped by service
+        $resolvedTicketsByService = (clone $query)->where('status_id', 3) // Assuming 3 is the status_id for resolved
+            ->select('service_id', \DB::raw('count(*) as count'))
+            ->groupBy('service_id')
+            ->with('service:id,name') // Assuming you have a relationship defined in the Ticket model
+            ->get()
+            ->map(function ($ticket) {
+                return [
+                    'name' => $ticket->service->name,
+                    'count' => $ticket->count,
+                ];
+            });
 
-        $openTickets = $query->whereHas('status', function ($query) {
-            $query->where('name', 'open');
-        })->count();
+        // Fetch open tickets count
+        $openTickets = (clone $query)->where('status_id', 1) // Assuming 1 is the status_id for open
+            ->count();
 
         return response()->json([
-            'resolved' => $resolvedTickets,
+            'resolvedByService' => $resolvedTicketsByService,
             'open' => $openTickets,
         ]);
+    }
+    public function getPriorityStats(Request $request)
+    {
+        $priorityStats = Ticket::select('priority_id', \DB::raw('count(*) as count'))
+            ->groupBy('priority_id')
+            ->with('priority:id,name') // Assuming you have a relationship defined in the Ticket model
+            ->get()
+            ->map(function ($ticket) {
+                return [
+                    'priority' => $ticket->priority ? $ticket->priority->name : 'Unknown',
+                    'count' => $ticket->count,
+                ];
+            });
+
+        return response()->json($priorityStats);
     }
 }

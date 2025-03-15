@@ -18,7 +18,7 @@
     <div class="flex justify-between mb-4">
       <div class="bg-green-100 p-4 rounded-lg shadow-lg flex-1 mr-2">
         <h3 class="font-semibold text-green-700">{{ $t('Resolved Tickets') }}</h3>
-        <p class="text-2xl font-bold text-green-700">{{ resolvedTickets }}</p>
+        <p class="text-2xl font-bold text-green-700">{{ totalResolvedTickets }}</p>
       </div>
       <div class="bg-red-100 p-4 rounded-lg shadow-lg flex-1 ml-2">
         <h3 class="font-semibold text-red-700">{{ $t('Open Tickets') }}</h3>
@@ -45,7 +45,7 @@ export default {
   name: "Analytics",
   data() {
     return {
-      resolvedTickets: 0,
+      resolvedTicketsByService: [],
       openTickets: 0,
       services: [],
       departments: [],
@@ -55,8 +55,11 @@ export default {
     };
   },
   computed: {
+    totalResolvedTickets() {
+      return this.resolvedTicketsByService.reduce((total, service) => total + service.count, 0);
+    },
     totalTickets() {
-      return this.resolvedTickets + this.openTickets;
+      return this.totalResolvedTickets + this.openTickets;
     }
   },
   mounted() {
@@ -88,9 +91,10 @@ export default {
         params.department_id = this.selectedDepartment;
       }
       axios.get('api/dashboard/tickets/stats', { params }).then(response => {
-        this.resolvedTickets = response.data.resolved;
-        this.openTickets = response.data.open;
-        console.log("Resolved Tickets:", this.resolvedTickets);
+        console.log("API Response:", response.data); // Log the API response
+        this.resolvedTicketsByService = response.data.resolvedByService || [];
+        this.openTickets = response.data.open || 0;
+        console.log("Resolved Tickets by Service:", this.resolvedTicketsByService);
         console.log("Open Tickets:", this.openTickets);
         this.updateChart();
       }).catch(error => {
@@ -99,14 +103,24 @@ export default {
     },
     renderChart() {
       const ctx = document.getElementById('ticketChart').getContext('2d');
+      if (!ctx) {
+        console.error("Canvas element not found");
+        return;
+      }
+      const labels = this.resolvedTicketsByService.map(service => service.name);
+      const data = this.resolvedTicketsByService.map(service => service.count);
+      labels.push('Open Tickets');
+      data.push(this.openTickets);
+      console.log("Rendering Chart with Data:", data);
+
       this.chart = new Chart(ctx, {
-        type: 'doughnut',
+        type: 'bar',
         data: {
-          labels: ['Resolved', 'Open'],
+          labels: labels,
           datasets: [{
             label: 'Tickets',
-            data: [this.resolvedTickets, this.openTickets],
-            backgroundColor: ['#4caf50', '#f44336'],
+            data: data,
+            backgroundColor: this.generateColors(data.length),
           }]
         },
         options: {
@@ -133,17 +147,36 @@ export default {
                 return value;
               }
             }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
           }
         }
       });
     },
     updateChart() {
       if (this.chart) {
-        this.chart.data.datasets[0].data = [this.resolvedTickets, this.openTickets];
+        const labels = this.resolvedTicketsByService.map(service => service.name);
+        const data = this.resolvedTicketsByService.map(service => service.count);
+        labels.push('Open Tickets');
+        data.push(this.openTickets);
+        console.log("Updating Chart Data:", data);
+
+        this.chart.data.labels = labels;
+        this.chart.data.datasets[0].data = data;
         this.chart.update();
       } else {
         this.renderChart();
       }
+    },
+    generateColors(count) {
+      const colors = [];
+      for (let i = 0; i < count; i++) {
+        colors.push(`hsl(${Math.floor(Math.random() * 360)}, 100%, 75%)`);
+      }
+      return colors;
     }
   }
 }

@@ -62,7 +62,7 @@
                       </td>
                       <td class="px-6 py-4 whitespace-no-wrap leading-5">
                         <div class="text-sm text-gray-800">
-                          {{ announcement.description }}
+                          {{ truncateDescription(announcement.description) }}
                         </div>
                       </td>
                       <td class="px-6 py-4 whitespace-no-wrap leading-5">
@@ -150,6 +150,13 @@ export default {
         hour12: true
       }); // Example format: "January 25, 2025, 11:55:18 AM"
     },
+    truncateDescription(description) {
+      const maxLength = 100; // Set the maximum length for the description
+      if (description.length > maxLength) {
+        return description.substring(0, maxLength) + '...';
+      }
+      return description;
+    },
     loadAnnouncements() {
       // Load announcements from a local source or API
       axios.get('/api/announcements').then(response => {
@@ -171,3 +178,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.analytics-container {
+  padding: 20px;
+}
+</style>
