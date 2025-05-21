@@ -2,80 +2,86 @@
 
 ![System Banner](./assets/banner.png)
 
-A full-stack web application for managing resident concerns through real-time ticketing, analytics, and role-based access for Angeles City.
-
----
-
-## 📖 User Manual with Screenshots
-
-All screenshots are located in the `User Manual Mockup` folder:
+## 📖 Complete User Manual with All Screenshots
 
 ### 🔐 Authentication
-| Feature | Screenshot |
-|---------|-----------|
-| **Login Page** | ![Login](./User%20Manual%20Mockup/Log%20in%20page.png) |
-| **Recover Account** | ![Recover](./User%20Manual%20Mockup/Recover%20Account%20Page.png) |
-| **Change Password** | ![Change Pass](./User%20Manual%20Mockup/Change%20Password%20Page.png) |
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin: 30px 0;">
+  <img src="./User%20Manual%20Mockup/Log%20in%20page.png" alt="Login Page" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Recover%20Account%20Page.png" alt="Recover Account" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Change%20Password%20Page.png" alt="Change Password" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+</div>
 
 ### 👤 Resident Interface
-| Feature | Screenshot |
-|---------|-----------|
-| **Home Page** | ![Resident Home](./User%20Manual%20Mockup/Resident%20Home%20Page.png) |
-| **Home Page 2** | ![Resident Home 2](./User%20Manual%20Mockup/Resident%20Home%20Page%202.png) |
-| **New Ticket** | ![New Ticket](./User%20Manual%20Mockup/New%20Ticket%20Page.png) |
-| **Ticket Details** | ![Ticket Details](./User%20Manual%20Mockup/Ticket%20Details%20Page.png) |
-| **Ticket Details 2** | ![Ticket Details 2](./User%20Manual%20Mockup/Ticket%20Details%20Page%202.png) |
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin: 30px 0;">
+  <img src="./User%20Manual%20Mockup/Resident%20Home%20Page.png" alt="Resident Home" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Resident%20Home%20Page%202.png" alt="Resident Home 2" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/New%20Ticket%20Page.png" alt="New Ticket" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Ticket%20Details%20Page.png" alt="Ticket Details" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Ticket%20Details%20Page%202.png" alt="Ticket Details 2" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+</div>
 
 ### 👨‍💼 Barangay Staff Interface
-| Feature | Screenshot |
-|---------|-----------|
-| **Ticket Management** | ![Official Ticket](./User%20Manual%20Mockup/Barangay%20Official%20Ticket%20Page.png) |
-| **Ticket Management 2** | ![Official Ticket 2](./User%20Manual%20Mockup/Barangay%20Official%20Ticket%20Page%202.png) |
-| **Blotter Records** | ![Blotter](./User%20Manual%20Mockup/Biotter%20Page.png) |
-| **Blotter Records 2** | ![Blotter 2](./User%20Manual%20Mockup/Biotter%20Page%202.png) |
-| **Service Management** | ![Service](./User%20Manual%20Mockup/Service%20Page.png) |
-| **Service Management 2** | ![Service 2](./User%20Manual%20Mockup/Service%20Page%202.png) |
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin: 30px 0;">
+  <img src="./User%20Manual%20Mockup/Barangay%20Official%20Ticket%20Page.png" alt="Ticket Management" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Barangay%20Official%20Ticket%20Page%202.png" alt="Ticket Management 2" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Biotter%20Page.png" alt="Blotter Records" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Biotter%20Page%202.png" alt="Blotter Records 2" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Service%20Page.png" alt="Service Management" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Service%20Page%202.png" alt="Service Management 2" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+</div>
 
 ### 📊 Analytics Dashboard
-| Feature | Screenshot |
-|---------|-----------|
-| **Main Dashboard** | ![Analytics 1](./User%20Manual%20Mockup/Dashboard%20Analytics%20Page.png) |
-| **Dashboard 2** | ![Analytics 2](./User%20Manual%20Mockup/Dashboard%20Analytics%20Page%202.png) |
-| **Dashboard 3** | ![Analytics 3](./User%20Manual%20Mockup/Dashboard%20Analytics%20Page%203.png) |
-| **Dashboard 4** | ![Analytics 4](./User%20Manual%20Mockup/Dashboard%20Analytics%20Page%204.png) |
-| **Dashboard 5** | ![Analytics 5](./User%20Manual%20Mockup/Dashboard%20Analytics%20Page%205.png) |
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin: 30px 0;">
+  <img src="./User%20Manual%20Mockup/Dashboard%20Analytics%20Page.png" alt="Main Dashboard" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Dashboard%20Analytics%20Page%202.png" alt="Dashboard 2" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Dashboard%20Analytics%20Page%203.png" alt="Dashboard 3" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Dashboard%20Analytics%20Page%204.png" alt="Dashboard 4" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Dashboard%20Analytics%20Page%205.png" alt="Dashboard 5" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+</div>
 
 ### ⚙️ Administration
-| Feature | Screenshot |
-|---------|-----------|
-| **User Management** | ![Users](./User%20Manual%20Mockup/User%20Page.png) |
-| **Barangay Settings** | ![Barangays](./User%20Manual%20Mockup/Barangays%20Page.png) |
-| **Barangay Settings 2** | ![Barangays 2](./User%20Manual%20Mockup/Barangays%20Page%202.png) |
-| **Announcements** | ![Announce](./User%20Manual%20Mockup/Announcement%20Page.png) |
-| **Announcements 2** | ![Announce 2](./User%20Manual%20Mockup/Announcement%20Page%202.png) |
-| **User Roles** | ![Roles](./User%20Manual%20Mockup/User%20Roles%20Page.png) |
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin: 30px 0;">
+  <img src="./User%20Manual%20Mockup/User%20Page.png" alt="User Management" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Barangays%20Page.png" alt="Barangay Settings" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Barangays%20Page%202.png" alt="Barangay Settings 2" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Announcement%20Page.png" alt="Announcements" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Announcement%20Page%202.png" alt="Announcements 2" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/User%20Roles%20Page.png" alt="User Roles" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+</div>
 
 ### 🏷️ System Configuration
-| Feature | Screenshot |
-|---------|-----------|
-| **Labels** | ![Labels](./User%20Manual%20Mockup/Labels%20Page.png) |
-| **Labels 2** | ![Labels 2](./User%20Manual%20Mockup/Labels%20Page%202.png) |
-| **Priorities** | ![Priorities](./User%20Manual%20Mockup/Priorities%20Page.png) |
-| **Statuses** | ![Statuses](./User%20Manual%20Mockup/Status:%20Page.png) |
-| **Canned Replies** | ![Replies](./User%20Manual%20Mockup/Canned%20Replies%20Page.png) |
-| **Canned Replies 2** | ![Replies 2](./User%20Manual%20Mockup/Canned%20Replies%20Page%202.png) |
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin: 30px 0;">
+  <img src="./User%20Manual%20Mockup/Labels%20Page.png" alt="Labels" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Labels%20Page%202.png" alt="Labels 2" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Priorities%20Page.png" alt="Priorities" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Status:%20Page.png" alt="Statuses" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Canned%20Replies%20Page.png" alt="Canned Replies" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+  <img src="./User%20Manual%20Mockup/Canned%20Replies%20Page%202.png" alt="Canned Replies 2" style="border-radius: 8px; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+</div>
 
----
-
-## 🛠️ Technical Specifications
+## 🛠️ Complete Installation Guide
 
 ```bash
-# Installation
-git clone https://github.com/your-repo/barangay-system.git
-cd barangay-system
+# 1. Clone repository
+git clone https://github.com/your-org/barangay-system.git
+
+# 2. Install backend dependencies
 composer install
+
+# 3. Install frontend dependencies
 npm install && npm run dev
+
+# 4. Setup environment
 cp .env.example .env
 php artisan key:generate
+
+# 5. Configure database (edit .env file)
+DB_DATABASE=barangay_system
+DB_USERNAME=root
+DB_PASSWORD=
+
+# 6. Run migrations
 php artisan migrate
+
+# 7. Start development server
 php artisan serve
