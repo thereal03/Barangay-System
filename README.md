@@ -110,7 +110,7 @@ A comprehensive full-stack solution for efficient resident concern management th
 - **Priority Levels**  
   ![Priorities](./User%20Manual%20Mockup/Priorities%20Page.png)
 - **Status Types**  
-  ![Statuses](./User%20Manual%20Mockup/Status:%20Page.png)
+  ![Statuses](./User%20Manual%20Mockup/Statues:%20Page.png)
 - **Canned Responses**  
   ![Replies](./User%20Manual%20Mockup/Canned%20Replies%20Page.png)  
   ![Replies2](./User%20Manual%20Mockup/Canned%20Replies%20Page%202.png)
