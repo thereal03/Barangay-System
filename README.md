@@ -1,118 +1,116 @@
 # 🌆 City-Wide Barangay Management System
 
-<div style="text-align: center; margin: 20px 0;">
-  <img src="./assets/system-banner.png" alt="System Banner" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-</div>
+A comprehensive full-stack solution for efficient resident concern management through real-time ticketing, analytics, and role-based access control.
 
-A modern, full-stack platform connecting residents with barangay services through real-time ticketing and data-driven insights.
+## � Core Features
 
----
+### 🎫 Ticketing System
+- Resident concern submission
+- Barangay staff ticket management
+- Labeling and resolution tracking
 
-## ✨ Key Features
+### 📢 Public Announcements
+- Barangay updates publication
+- Targeted notifications
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 30px 0;">
+### 📈 Performance Analytics
+- Municipal-level monitoring
+- Ticket volume and status tracking
+- Barangay performance metrics
 
-<div style="background: #f8f9fa; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-<h3 style="color: #2c3e50; margin-top: 0;">🎫 Ticketing System</h3>
-<p>End-to-end concern management from submission to resolution with real-time updates</p>
-</div>
+### 🔐 Access Control
+- Four distinct user roles
+- Granular feature permissions
+- Secure authentication
 
-<div style="background: #f8f9fa; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-<h3 style="color: #2c3e50; margin-top: 0;">📊 Analytics Dashboard</h3>
-<p>Interactive visualizations of ticket metrics and barangay performance</p>
-</div>
+### 💬 Communication Tools
+- Real-time chat support
+- Canned responses library
+- Ticket discussion threads
 
-<div style="background: #f8f9fa; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-<h3 style="color: #2c3e50; margin-top: 0;">👥 Role-Based Access</h3>
-<p>Custom interfaces for each user type with appropriate permissions</p>
-</div>
+### 🗂️ Record Management
+- Service requirements handling
+- Blotter record maintenance
+- Resident database
 
-</div>
+## 🖥️ Technology Stack
 
----
+| Layer        | Technology       |
+|--------------|------------------|
+| **Backend**  | Laravel (PHP)    |
+| **Frontend** | Vue.js, Bootstrap|
+| **Database** | MySQL            |
+| **Hosting**  | AWS EC2          |
+| **DNS**      | Hostinger        |
 
-## 🛠️ Technology Stack
+## 👥 User Role Matrix
 
-<div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; margin: 30px 0;">
+| Role               | Key Capabilities                              |
+|--------------------|-----------------------------------------------|
+| **Admin**          | Full system control, user/barangay management |
+| **Barangay Staff** | Ticket handling, announcements, resident mgmt |
+| **Municipal**      | Analytics, performance monitoring             |
+| **Resident**       | Ticket submission, chat support               |
 
-<div style="text-align: center;">
-  <img src="https://cdn.worldvectorlogo.com/logos/laravel-2.svg" alt="Laravel" style="height: 50px; margin-bottom: 10px;">
-  <p><strong>Laravel 9</strong><br>Backend Framework</p>
-</div>
-
-<div style="text-align: center;">
-  <img src="https://cdn.worldvectorlogo.com/logos/vue-js-1.svg" alt="Vue.js" style="height: 50px; margin-bottom: 10px;">
-  <p><strong>Vue.js 3</strong><br>Frontend Framework</p>
-</div>
-
-<div style="text-align: center;">
-  <img src="https://cdn.worldvectorlogo.com/logos/mysql-6.svg" alt="MySQL" style="height: 50px; margin-bottom: 10px;">
-  <p><strong>MySQL 8</strong><br>Database</p>
-</div>
-
-<div style="text-align: center;">
-  <img src="https://cdn.worldvectorlogo.com/logos/aws-2.svg" alt="AWS" style="height: 50px; margin-bottom: 10px;">
-  <p><strong>AWS EC2</strong><br>Hosting</p>
-</div>
-
-</div>
-
----
-
-## 📖 User Manual
+## 📸 System Screenshots
 
 ### 🔐 Authentication
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin: 30px 0;">
-  <div style="text-align: center;">
-    <img src="./User%20Manual%20Mockup/Log%20in%20page.png" alt="Login Page" style="border-radius: 8px; border: 1px solid #e1e4e8; box-shadow: 0 3px 10px rgba(0,0,0,0.08); max-width: 100%;">
-    <p><strong>Login Page</strong></p>
-  </div>
-  <div style="text-align: center;">
-    <img src="./User%20Manual%20Mockup/Recover%20Account%20Page.png" alt="Recover Account" style="border-radius: 8px; border: 1px solid #e1e4e8; box-shadow: 0 3px 10px rgba(0,0,0,0.08); max-width: 100%;">
-    <p><strong>Account Recovery</strong></p>
-  </div>
-  <div style="text-align: center;">
-    <img src="./User%20Manual%20Mockup/Change%20Password%20Page.png" alt="Change Password" style="border-radius: 8px; border: 1px solid #e1e4e8; box-shadow: 0 3px 10px rgba(0,0,0,0.08); max-width: 100%;">
-    <p><strong>Password Change</strong></p>
-  </div>
-</div>
+- **Login Page**  
+  ![Login](./User%20Manual%20Mockup/Log%20in%20page.png)
+- **Account Recovery**  
+  ![Recover](./User%20Manual%20Mockup/Recover%20Account%20Page.png)
+- **Password Change**  
+  ![Change Pass](./User%20Manual%20Mockup/Change%20Password%20Page.png)
 
-### 👤 Resident Portal
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin: 30px 0;">
-  <div style="text-align: center;">
-    <img src="./User%20Manual%20Mockup/Resident%20Home%20Page.png" alt="Resident Dashboard" style="border-radius: 8px; border: 1px solid #e1e4e8; box-shadow: 0 3px 10px rgba(0,0,0,0.08); max-width: 100%;">
-    <p><strong>Dashboard View</strong></p>
-  </div>
-  <div style="text-align: center;">
-    <img src="./User%20Manual%20Mockup/New%20Ticket%20Page.png" alt="New Ticket" style="border-radius: 8px; border: 1px solid #e1e4e8; box-shadow: 0 3px 10px rgba(0,0,0,0.08); max-width: 100%;">
-    <p><strong>Ticket Submission</strong></p>
-  </div>
-  <div style="text-align: center;">
-    <img src="./User%20Manual%20Mockup/Ticket%20Details%20Page.png" alt="Ticket Details" style="border-radius: 8px; border: 1px solid #e1e4e8; box-shadow: 0 3px 10px rgba(0,0,0,0.08); max-width: 100%;">
-    <p><strong>Ticket Details</strong></p>
-  </div>
-</div>
+### 👨👩👧👦 Resident Portal
+- **Dashboard**  
+  ![Home](./User%20Manual%20Mockup/Resident%20Home%20Page.png)  
+  ![Home2](./User%20Manual%20Mockup/Resident%20Home%20Page%202.png)
+- **Ticket Creation**  
+  ![New Ticket](./User%20Manual%20Mockup/New%20Ticket%20Page.png)
+- **Ticket Details**  
+  ![Details](./User%20Manual%20Mockup/Ticket%20Details%20Page.png)  
+  ![Details2](./User%20Manual%20Mockup/Ticket%20Details%20Page%202.png)
 
-[Additional sections continue with the same elegant formatting...]
+### 🏢 Barangay Staff Interface
+- **Ticket Management**  
+  ![Tickets](./User%20Manual%20Mockup/Barangay%20Official%20Ticket%20Page.png)  
+  ![Tickets2](./User%20Manual%20Mockup/Barangay%20Official%20Ticket%20Page%202.png)
+- **Blotter System**  
+  ![Blotter](./User%20Manual%20Mockup/Blotter%20Page.png)  
+  ![Blotter2](./User%20Manual%20Mockup/Blotter%20Page%202.png)
+- **Services**  
+  ![Services](./User%20Manual%20Mockup/Service%20Page.png)  
+  ![Services2](./User%20Manual%20Mockup/Service%20Page%202.png)
 
----
+### 📊 Municipal Analytics
+- **Performance Dashboard**  
+  ![Dashboard](./User%20Manual%20Mockup/Dashboard%20Analytics%20Page.png)  
+  ![Dashboard2](./User%20Manual%20Mockup/Dashboard%20Analytics%20Page%202.png)  
+  ![Dashboard3](./User%20Manual%20Mockup/Dashboard%20Analytics%20Page%203.png)  
+  ![Dashboard4](./User%20Manual%20Mockup/Dashboard%20Analytics%20Page%204.png)  
+  ![Dashboard5](./User%20Manual%20Mockup/Dashboard%20Analytics%20Page%205.png)
 
-## 🚀 Installation Guide
+### ⚙️ Admin Console
+- **User Administration**  
+  ![Users](./User%20Manual%20Mockup/User%20Page.png)
+- **Barangay Configuration**  
+  ![Barangays](./User%20Manual%20Mockup/Barangays%20Page.png)  
+  ![Barangays2](./User%20Manual%20Mockup/Barangays%20Page%202.png)
+- **Announcements**  
+  ![Announce](./User%20Manual%20Mockup/Announcement%20Page.png)  
+  ![Announce2](./User%20Manual%20Mockup/Announcement%20Page%202.png)
+- **Role Management**  
+  ![Roles](./User%20Manual%20Mockup/User%20Roles%20Page.png)
 
-```bash
-# Clone the repository
-git clone https://github.com/your-org/barangay-system.git
-
-# Install dependencies
-composer install
-npm install
-
-# Configure environment
-cp .env.example .env
-php artisan key:generate
-
-# Set up database
-php artisan migrate
-
-# Start development server
-php artisan serve
+### 🏷️ System Settings
+- **Label Management**  
+  ![Labels](./User%20Manual%20Mockup/Labels%20Page.png)  
+  ![Labels2](./User%20Manual%20Mockup/Labels%20Page%202.png)
+- **Priority Levels**  
+  ![Priorities](./User%20Manual%20Mockup/Priorities%20Page.png)
+- **Status Types**  
+  ![Statuses](./User%20Manual%20Mockup/Status:%20Page.png)
+- **Canned Responses**  
+  ![Replies](./User%20Manual%20Mockup/Canned%20Replies%20Page.png)  
+  ![Replies2](./User%20Manual%20Mockup/Canned%20Replies%20Page%202.png)
